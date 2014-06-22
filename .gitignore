@@ -1,15 +1,23 @@
 # =============== #
 # Unity generated #
 # =============== #
+<<<<<<< HEAD
 [Tt]emp/
 [Oo]bj/
 [Uu]nityGenerated/
 [Ll]ibrary/
+=======
+[Uu]nityGenerated/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+>>>>>>> 49c38fb804d4ecc184ea8dea1935665b0c69e392
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
 [Ee]xportedObj/
+<<<<<<< HEAD
 *.svd
 *.userprefs
 *.csproj
@@ -50,10 +58,31 @@
 
 # OS generated files #
 ######################
+=======
+/*.svd
+/*.csproj
+/*.unityproj
+/*.sln
+/*.suo
+/*.user
+/*.userprefs
+/*.pidb
+/*.booproj
+
+# ============ #
+# OS generated #
+# ============ #
+>>>>>>> 49c38fb804d4ecc184ea8dea1935665b0c69e392
 .DS_Store
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
+<<<<<<< HEAD
 ehthumbs.db
 Thumbs.db
+=======
+Icon?
+ehthumbs.db
+Thumbs.db
+>>>>>>> 49c38fb804d4ecc184ea8dea1935665b0c69e392
