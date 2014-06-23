@@ -6,7 +6,6 @@ public class GameOfLife : MonoBehaviour {
 	private int board_size_x;
 	private int board_size_y;
 	private Texture2D texture;
-	private int last_seed;
 	private float timer = 30.0f;
 
 	//Public
@@ -38,7 +37,6 @@ public class GameOfLife : MonoBehaviour {
 	}
 	
 	public void generate() {
-		last_seed = seed;
 		for (int x = 0; x < board_size_x; x++) {
 			for (int y = 0; y < board_size_y; y++) {
 				world[x,y,2] = 0;
@@ -111,7 +109,21 @@ public class GameOfLife : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			step = true;
 		}
-		
+
+		if (Input.GetKeyDown (KeyCode.F1)) {	//Random Seed
+			seed = 0;
+			generate();
+			draw ();
+			pause = true;
+		}
+
+		if (Input.GetKeyDown (KeyCode.F2)) {	//Acorn Seed
+			seed = 1;
+			generate();
+			draw ();
+			pause = true;
+		}
+
 		if(Input.GetMouseButton(0) ) {
 			pause = true;
 			
@@ -135,16 +147,8 @@ public class GameOfLife : MonoBehaviour {
 			}
 		} else {
 			if (pause && step == false) {
-				//TODO: Toggle Paused Warning
-
-
+				//DO Nothing
 			} else {
-				//Regeneration during play.
-				if(last_seed != seed) {
-					generate();
-					pause = true;
-				}
-
 				//Drawing and Updating Texture
 				draw();
 				nextGeneration();
