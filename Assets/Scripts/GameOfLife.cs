@@ -5,7 +5,6 @@ public class GameOfLife : MonoBehaviour {
 	private int[,,] world;
 	private int board_size_x;
 	private int board_size_y;
-	private int size;
 	private Texture2D texture;
 	private int last_seed;
 	private float timer = 30.0f;
@@ -22,14 +21,9 @@ public class GameOfLife : MonoBehaviour {
 	 * initialization
 	 */ 
 	void Start () {
-		//int h = (int) (Camera.main.orthographicSize * 2.0);
-		//int w = (int) (h * Screen.width / Screen.height);
-		//gameObject.transform.localScale = Vector3(w, h, 0.1);
-
 		world = new int[width, height, 3];	//0 = Previous Generation, 1 = Current Generation (drawn), 2 = next generation
 		board_size_x = width;
 		board_size_y = height;
-		size = width * height;
 
 		texture = new Texture2D (width, height);
 		renderer.material.mainTexture = texture;
@@ -129,10 +123,12 @@ public class GameOfLife : MonoBehaviour {
 			if (pause && step == false) {
 				//TODO: Toggle Paused Warning after N seconds
 				//TODO: Create guiText.
-				//timer -= Time.deltaTime;
-				//if (timer > 0) {
-				//	guiText.text = timer.ToString("F0");
-				//}
+
+				timer -= Time.deltaTime;
+				/*if (timer > 0) {
+					guiText.text = timer.ToString("F0");
+				}*/
+
 			} else {
 				timer = 30.0f;
 				//Regeneration during play.
