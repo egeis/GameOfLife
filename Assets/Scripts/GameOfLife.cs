@@ -7,15 +7,25 @@ public class GameOfLife : MonoBehaviour {
 	private int board_size_y;
 	private int size;
 	private Texture2D texture;
+	private int last_seed;
+	private float timer = 30.0f;
 
+	//Public
 	public int height = 32;
 	public int width = 32;
 	public float density = 0.5f;	//"f" forces 0.5 to be a single-percission float rather than a double.
 	public bool pause = false;
 	public bool step = false;
+	public int seed = 0;			//Predefined: 1 = Acorn.
 	
-	// Use this for initialization
+	/** 
+	 * initialization
+	 */ 
 	void Start () {
+		//int h = (int) (Camera.main.orthographicSize * 2.0);
+		//int w = (int) (h * Screen.width / Screen.height);
+		//gameObject.transform.localScale = Vector3(w, h, 0.1);
+
 		world = new int[width, height, 3];	//0 = Previous Generation, 1 = Current Generation (drawn), 2 = next generation
 		board_size_x = width;
 		board_size_y = height;
@@ -27,11 +37,12 @@ public class GameOfLife : MonoBehaviour {
 		//Generate Random Start
 		generate ();
 		draw ();
+
 		pause = true;
 	}
 	
-	void generate(int type = 0) {
-
+	public void generate() {
+		last_seed = seed;
 		for (int x = 0; x < board_size_x; x++) {
 			for (int y = 0; y < board_size_y; y++) {
 				world[x,y,2] = 0;
@@ -40,8 +51,8 @@ public class GameOfLife : MonoBehaviour {
 			}
 		}
 
-		//Origin [0,0] is top right.
-		switch(type) {
+		//(0,0) is top right...
+		switch(seed) {
 			case 0:	//Randomized
 			for (int i = 0; i < board_size_x * board_size_y * density; i++) {
 				int x = (int)(Random.value*board_size_x);
@@ -64,6 +75,9 @@ public class GameOfLife : MonoBehaviour {
 		}
 	}
 
+	/**
+	 * 
+	 */ 
 	void draw()
 	{
 		for (int x = 0; x < board_size_x; x++) {
@@ -86,21 +100,82 @@ public class GameOfLife : MonoBehaviour {
 		texture.Apply ();
 	}
 	
-	// Update is called once per frame
+	/**
+	 * Update is called once per frame
+	 */
 	void Update () {
-		if (pause && step == false) {
-			//TODO: Toggle Paused Warning after N seconds
+		if(Input.GetMouseButton(0) ) {
+			pause = true;
+			
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hit;
+			
+			if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
+				Vector2 pos;
+				
+				pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
+				pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
 
+				pos.x = Mathf.Abs( (width - 1) - pos.x );
+				pos.y = Mathf.Abs( (height - 1) - pos.y );
 
+				if(Debug.isDebugBuild) Debug.Log(pos);
+				
+				world[(int) pos.x, (int) pos.y,0] = 1;
+				texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
+				texture.Apply ();
+			}
 		} else {
-			//Drawing and Updating Texture
-			draw();
-			nextGeneration();
-		}
+			if (pause && step == false) {
+				//TODO: Toggle Paused Warning after N seconds
+				//TODO: Create guiText.
+				//timer -= Time.deltaTime;
+				//if (timer > 0) {
+				//	guiText.text = timer.ToString("F0");
+				//}
+			} else {
+				timer = 30.0f;
+				//Regeneration during play.
+				if(last_seed != seed) {
+					generate();
+					pause = true;
+				}
 
-		step = false;
+				//Drawing and Updating Texture
+				draw();
+				nextGeneration();
+			}
+
+			step = false;
+		}
 	}
 
+	/**
+	 *  OnMouseDown EVENT using gameObject.collider
+	 */ 
+	/*void OnMouseDown() {
+		pause = true;
+
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+
+		if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
+			Vector2 pos;
+
+			pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
+			pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
+
+			Debug.Log(pos);
+
+			world[(int) pos.x, (int) pos.y,0] = 1;
+			texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
+			texture.Apply ();
+		}
+	}*/
+
+	/**
+	 * Generates the NEXT generation
+	 */
 	private bool nextGeneration() {
 		//Birth and Death of Generation Next.
 		for (int x = 0; x < board_size_x; x++) {
