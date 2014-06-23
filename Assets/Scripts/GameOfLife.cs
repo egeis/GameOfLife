@@ -21,6 +21,8 @@ public class GameOfLife : MonoBehaviour {
 	 * initialization
 	 */ 
 	void Start () {
+		if (Debug.isDebugBuild) Debug.Log ("Starting: " + gameObject.name);
+
 		world = new int[width, height, 3];	//0 = Previous Generation, 1 = Current Generation (drawn), 2 = next generation
 		board_size_x = width;
 		board_size_y = height;
@@ -98,6 +100,10 @@ public class GameOfLife : MonoBehaviour {
 	 * Update is called once per frame
 	 */
 	void Update () {
+		if (pause) {
+
+		}
+
 		if(Input.GetMouseButton(0) ) {
 			pause = true;
 			
@@ -121,16 +127,10 @@ public class GameOfLife : MonoBehaviour {
 			}
 		} else {
 			if (pause && step == false) {
-				//TODO: Toggle Paused Warning after N seconds
-				//TODO: Create guiText.
+				//TODO: Toggle Paused Warning
 
-				timer -= Time.deltaTime;
-				/*if (timer > 0) {
-					guiText.text = timer.ToString("F0");
-				}*/
 
 			} else {
-				timer = 30.0f;
 				//Regeneration during play.
 				if(last_seed != seed) {
 					generate();
