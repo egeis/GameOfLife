@@ -100,10 +100,18 @@ public class GameOfLife : MonoBehaviour {
 	 * Update is called once per frame
 	 */
 	void Update () {
-		if (pause) {
-
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			Application.Quit();
 		}
 
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			pause = !pause;
+		}
+
+		if (Input.GetKeyDown(KeyCode.RightArrow)) {
+			step = true;
+		}
+		
 		if(Input.GetMouseButton(0) ) {
 			pause = true;
 			
