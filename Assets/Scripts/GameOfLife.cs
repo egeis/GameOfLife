@@ -124,40 +124,58 @@ public class GameOfLife : MonoBehaviour {
 			pause = true;
 		}
 
-		if(Input.GetMouseButton(0) ) {
+		if (Input.GetMouseButton (0)) {
 			pause = true;
-			
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit hit;
-			
-			if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
-				Vector2 pos;
-				
-				pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
-				pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
+			gridChange(0);
+		} 
+		
+		if(Input.GetMouseButton(1) ) {
+			pause = true;
+			gridChange(1);
+		} 
 
-				pos.x = Mathf.Abs( (width - 1) - pos.x );
-				pos.y = Mathf.Abs( (height - 1) - pos.y );
-
-				if(Debug.isDebugBuild) Debug.Log(pos);
-				
-				world[(int) pos.x, (int) pos.y,0] = 1;
-				texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
-				texture.Apply ();
-			}
+		if (pause && step == false) {
+			//DO Nothing
 		} else {
-			if (pause && step == false) {
-				//DO Nothing
-			} else {
-				//Drawing and Updating Texture
-				draw();
-				nextGeneration();
-			}
-
-			step = false;
+			//Drawing and Updating Texture
+			draw();
+			nextGeneration();
 		}
+
+		step = false;
 	}
 
+	private void gridChange(int type = 0) {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+		
+		if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
+			Vector2 pos;
+			
+			pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
+			pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
+			
+			pos.x = Mathf.Abs( (width - 1) - pos.x );
+			pos.y = Mathf.Abs( (height - 1) - pos.y );
+			
+			if(Debug.isDebugBuild) Debug.Log(pos);
+
+			if(type == 0) {
+				if (world[(int) pos.x, (int) pos.y,0] == 0) {
+					world[(int) pos.x, (int) pos.y,0] = 1;
+					texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
+				}
+			} else {
+				if (world[(int) pos.x, (int) pos.y,0] == 1) {
+					world[(int) pos.x, (int) pos.y,0] = 0;
+					texture.SetPixel ((int) pos.x, (int) pos.y, Color.black);
+				}
+			}
+			
+			texture.Apply ();
+		}
+	}
+	
 	/**
 	 *  OnMouseDown EVENT using gameObject.collider
 	 */ 
