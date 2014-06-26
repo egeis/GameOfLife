@@ -9,6 +9,9 @@ public class GameOfLife : MonoBehaviour {
 	private bool pause = false;
 	private int seed = 2;
 
+	private int _generation;
+	private int _alive;
+
 	//Public
 	public float density = 0.5f;	//"f" forces 0.5 to be a single-percission float rather than a double.
 	public bool step = false;
@@ -22,7 +25,13 @@ public class GameOfLife : MonoBehaviour {
 
 		float height = (float) (Camera.main.orthographicSize * 2.0);
 		float width = (float) (height * Screen.width / Screen.height);
-		transform.localScale = new Vector3( (width/10), 1, (height/10) );
+
+		/**
+		 * Dividing the width and height both by 10 before setting the transform vector fits
+		 * the plane perfectly to the window.  This could have something to do with the OrthographSize..
+		 * TODO: Research why this is working...
+		 */
+		transform.localScale = new Vector3 ((width / 11), 1, (height / 11));
 
 		texture = new Texture2D (sx, sy);
 		renderer.material.mainTexture = texture;
@@ -39,10 +48,16 @@ public class GameOfLife : MonoBehaviour {
 		pause = true;
 	}
 
+	/**
+	 * Generates Game Board
+	 * 
+	 * @param int seed, seed to be used.
+	 */ 
 	public void generate(int seed = 2) {
 		if (Debug.isDebugBuild) Debug.Log ("Creating World: " + seed);
 
 		this.seed = seed;
+		this._generation = 1;
 
 		//Clear World
 		for (int x = 0; x < sx; x++) {
@@ -80,10 +95,11 @@ public class GameOfLife : MonoBehaviour {
 	}
 
 	/**
-	 * 
+	 *  Draws the the current generation and clears the array for the next generation.
 	 */ 
 	void draw()
 	{
+		_alive = 0;
 		for (int x = 0; x < sx; x++) {
 			for (int y = 0; y < sy; y++) {
 				texture.SetPixel (x, y, Color.black);
@@ -91,6 +107,7 @@ public class GameOfLife : MonoBehaviour {
 				if ((world [x, y, 1] == 1) || (world [x, y, 1] == 0 && world [x, y, 0] == 1)) {
 					world [x, y, 0] = 1;
 					texture.SetPixel (x, y, Color.white);
+					_alive++;
 				} 
 
 				if (world [x, y, 1] == -1) {
@@ -100,8 +117,8 @@ public class GameOfLife : MonoBehaviour {
 				world [x, y, 1] = 0;
 			}
 		}
-		
-		texture.Apply ();
+
+		this.texture.Apply ();
 	}
 	
 	/**
@@ -113,10 +130,16 @@ public class GameOfLife : MonoBehaviour {
 		} else {
 			//Drawing and Updating Texture
 			draw();
+
+			this._generation++;		
+
+			SendMessageUpwards("UpdateGeneration", this._generation);
+			SendMessageUpwards("UpdateAlive", this._alive);
+
 			nextGeneration();
 		}
 
-		step = false;
+		this.step = false;
 	}
 
 	private void ChangeGrid(bool type = true) {

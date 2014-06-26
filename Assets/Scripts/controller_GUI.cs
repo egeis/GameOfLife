@@ -8,25 +8,38 @@ public class controller_GUI : MonoBehaviour {
 	private int _currentGameType = 1;
 	private int _gameTabSelected = 1;
 
+	private string _genLabelText;
+	private int _generation = 1;
+	private int _alive = 0;
+
 	// Use this for initialization
 	void Start () {
 	
 	}
 
 	void OnGUI() {
-		string[] toolbar = {"Clear", "Random", "Acorn"};
+		string[] _gen_toolbar = {"Clear", "Random", "Acorn"};
+		string[] _rules_toolbar = {"Original", "Set #2", "Set #3"};
 		
 		GUILayout.BeginArea( new Rect(0,0, (Screen.width), (Screen.height/4) ) );
 		GUILayout.BeginHorizontal ();
 		
-		_generationTabSelected = GUILayout.Toolbar(_generationTabSelected, toolbar);
-		
+		_generationTabSelected = GUILayout.Toolbar(_generationTabSelected, _gen_toolbar);
+		_currentGameType = GUILayout.Toolbar(_gameTabSelected, _rules_toolbar);
+
 		GUILayout.EndHorizontal ();
 		GUILayout.EndArea ();
+
+		_genLabelText = "Generation: " + this._generation.ToString () + " Cells Active: " + this._alive.ToString();
+
+		GUI.Label( new Rect (0, Screen.height - 24, Screen.width / 2, 24 ), _genLabelText );
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		_genLabelText = "Generation: " + this._generation.ToString () + " Cells Active: " + this._alive.ToString();
 
 		if (_currentGenerationType != _generationTabSelected) {
 			_currentGenerationType = _generationTabSelected;
@@ -80,4 +93,13 @@ public class controller_GUI : MonoBehaviour {
 			}
 		} 
 	}
+
+	public void UpdateGeneration(int generation) {
+		this._generation = generation;
+	}
+
+	public void UpdateAlive(int alive) {
+		this._alive = alive;
+	}
+
 }
