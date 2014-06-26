@@ -7,7 +7,7 @@ public class GameOfLife : MonoBehaviour {
 	private int sy;
 	private Texture2D texture;
 	private bool pause = false;
-	private int seed = 1;
+	private int seed = 2;
 
 	//Public
 	public float density = 0.5f;	//"f" forces 0.5 to be a single-percission float rather than a double.
@@ -39,7 +39,11 @@ public class GameOfLife : MonoBehaviour {
 		pause = true;
 	}
 
-	public void generate(int a = 0) {
+	public void generate(int seed = 2) {
+		if (Debug.isDebugBuild) Debug.Log ("Creating World: " + seed);
+
+		this.seed = seed;
+
 		//Clear World
 		for (int x = 0; x < sx; x++) {
 			for (int y = 0; y < sy; y++) {
@@ -48,30 +52,26 @@ public class GameOfLife : MonoBehaviour {
 			}
 		}
 
-		seed = a;
-
 		//(0,0) is top right...
 		switch(seed) {
-			case 0: //Clear World.
-			//World is Already Cleared.
-			break;
+			case 1: //Clear World.
+				//World is Already Cleared.
+				break;
+			case 2:	//Randomized
+				for (int i = 0; i < sx * sy * density; i++) { world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1; }
+				break;	
+			case 3: //Acorn	
+				int ax = (int) sx / 2;
+				int ay = (int) sy / 2;
 
-			case 1:	//Randomized
-			for (int i = 0; i < sx * sy * density; i++) { world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1; }
-			break;	
-			
-			case 2: //Acorn	
-			int ax = (int) sx / 2;
-			int ay = (int) sy / 2;
-
-			world[ax,ay,1] = 1; 
-			world[ax-1,ay-2,1] = 1;
-			world[ax-1,ay,1] = 1;
-			world[ax-3,ay-1,1] = 1; 
-			world[ax-4,ay,1] = 1; 
-			world[ax-5,ay,1] = 1; 
-			world[ax-6,ay,1] = 1; 
-			break;
+				world[ax,ay,1] = 1; 
+				world[ax-1,ay-2,1] = 1;
+				world[ax-1,ay,1] = 1;
+				world[ax-3,ay-1,1] = 1; 
+				world[ax-4,ay,1] = 1; 
+				world[ax-5,ay,1] = 1; 
+				world[ax-6,ay,1] = 1; 
+				break;
 		}
 
 		draw ();
@@ -106,43 +106,6 @@ public class GameOfLife : MonoBehaviour {
 	 * Update is called once per frame
 	 */
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Escape)) {
-			Application.Quit();
-		}
-
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			SendMessage("TogglePause");
-		}
-
-		if (Input.GetKeyDown(KeyCode.RightArrow)) {
-			step = true;
-		}
-
-		if (Input.GetKeyDown (KeyCode.F1)) {	//Clear Seed
-			SendMessage("generate",0);			
-			SendMessage("SetPause", true);
-		}
-
-		if (Input.GetKeyDown (KeyCode.F2)) {	//Random Seed
-			SendMessage("generate",1);
-			SendMessage("SetPause", true);
-		}
-
-		if (Input.GetKeyDown (KeyCode.F3)) {	//Acorn Seed
-			SendMessage("generate",2);
-			SendMessage("SetPause", true);
-		}
-
-		if (Input.GetMouseButton (0)) {
-			SendMessage("SetPause", true);
-			gridChange(0);
-		} 
-		
-		if(Input.GetMouseButton(1) ) {
-			SendMessage("SetPause", true);
-			gridChange(1);
-		} 
-
 		if (pause && step == false) {
 			//DO Nothing
 		} else {
@@ -154,7 +117,7 @@ public class GameOfLife : MonoBehaviour {
 		step = false;
 	}
 
-	private void gridChange(int type = 0) {
+	private void ChangeGrid(bool type = true) {
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		RaycastHit hit;
 		
@@ -169,7 +132,7 @@ public class GameOfLife : MonoBehaviour {
 			
 			if(Debug.isDebugBuild) Debug.Log(pos);
 
-			if(type == 0) {
+			if(type) {
 				if (world[(int) pos.x, (int) pos.y,0] == 0) {
 					world[(int) pos.x, (int) pos.y,0] = 1;
 					texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
@@ -224,6 +187,7 @@ public class GameOfLife : MonoBehaviour {
 				world [(x + sx- 1) % sx, (y + sy - 1) % sy, 0];   
 	}
 
-	public void SetPause(bool a = true) { pause = a; }
-	public void TogglePause() { pause = !pause; }
+	public void SetPause(bool a = true) {pause = a;}
+	public void TogglePause() {pause = !pause;}
+	public void OnRightArrow() {step = true;}
 }
