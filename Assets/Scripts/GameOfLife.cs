@@ -58,7 +58,9 @@ public class GameOfLife : MonoBehaviour {
 				//World is Already Cleared.
 				break;
 			case 2:	//Randomized
-				for (int i = 0; i < sx * sy * density; i++) { world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1; }
+				for (int i = 0; i < sx * sy * density; i++) { 
+					world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1;
+				}
 				break;	
 			case 3: //Acorn	
 				int ax = (int) sx / 2;
@@ -177,14 +179,14 @@ public class GameOfLife : MonoBehaviour {
 	 * @param int y y-coordinate
 	 */
 	int getAdjacent(int x, int y) {
-		return 	world [(x + 1) % sx, y, 0] +
-				world [(x + sx - 1) % sx, y, 0] +
-				world [x, (y + 1) % sy, 0] +
-				world [x, (y + sy - 1) % sy, 0] +
-				world [(x + 1) % sx, (y + 1) % sy, 0] +
-				world [(x + sx - 1) % sx, (y + 1) % sy, 0] +
-				world [(x + 1) % sx, (y + sy - 1) % sy, 0] +
-				world [(x + sx- 1) % sx, (y + sy - 1) % sy, 0];   
+		return 	world [(x + 1) % sx, y, 0] + 
+			world [(x + sx - 1) % sx, y, 0] +
+			world [x, (y + 1) % sy, 0] +
+			world [x, (y + sy - 1) % sy, 0] +
+			world [(x + 1) % sx, (y + 1) % sy, 0] +
+			world [(x + sx - 1) % sx, (y + 1) % sy, 0] +
+			world [(x + 1) % sx, (y + sy - 1) % sy, 0] +
+			world [(x + sx- 1) % sx, (y + sy - 1) % sy, 0];   
 	}
 
 	public void SetPause(bool a = true) {pause = a;}
