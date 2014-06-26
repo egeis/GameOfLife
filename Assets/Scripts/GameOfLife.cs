@@ -3,70 +3,78 @@ using System.Collections;
 
 public class GameOfLife : MonoBehaviour {
 	private int[,,] world;
-	private int board_size_x;
-	private int board_size_y;
+	private int sx;
+	private int sy;
 	private Texture2D texture;
-	private float timer = 30.0f;
+	private bool pause = false;
+	private int seed = 1;
 
 	//Public
-	public int height = 32;
-	public int width = 32;
 	public float density = 0.5f;	//"f" forces 0.5 to be a single-percission float rather than a double.
-	public bool pause = false;
 	public bool step = false;
-	public int seed = 0;			//Predefined: 1 = Acorn.
-	
+
+	void Init()
+	{
+		sx = (int) Screen.width/4;
+		sy = (int) Screen.height/4;
+		
+		world = new int[sx, sy, 2];
+
+		float height = (float) (Camera.main.orthographicSize * 2.0);
+		float width = (float) (height * Screen.width / Screen.height);
+		transform.localScale = new Vector3( (width/10), 1, (height/10) );
+
+		texture = new Texture2D (sx, sy);
+		renderer.material.mainTexture = texture;
+	}
+
 	/** 
 	 * initialization
 	 */ 
 	void Start () {
-		if (Debug.isDebugBuild) Debug.Log ("Starting: " + gameObject.name);
-
-		world = new int[width, height, 3];	//0 = Previous Generation, 1 = Current Generation (drawn), 2 = next generation
-		board_size_x = width;
-		board_size_y = height;
-
-		texture = new Texture2D (width, height);
-		renderer.material.mainTexture = texture;
+		Init ();
 
 		//Generate Random Start
-		generate ();
-		draw ();
-
+		generate (seed);
 		pause = true;
 	}
-	
-	public void generate() {
-		for (int x = 0; x < board_size_x; x++) {
-			for (int y = 0; y < board_size_y; y++) {
-				world[x,y,2] = 0;
+
+	public void generate(int a = 0) {
+		//Clear World
+		for (int x = 0; x < sx; x++) {
+			for (int y = 0; y < sy; y++) {
 				world[x,y,1] = 0;
 				world[x,y,0] = 0;
 			}
 		}
 
+		seed = a;
+
 		//(0,0) is top right...
 		switch(seed) {
-			case 0:	//Randomized
-			for (int i = 0; i < board_size_x * board_size_y * density; i++) {
-				int x = (int)(Random.value*board_size_x);
-				int y = (int)(Random.value*board_size_y);
-				world[x, y, 1] = 1;
-			}
-			break;	
-			case 1: //Acorn	
-			int sx = (int) width / 2;
-			int sy = (int) height / 2;
+			case 0: //Clear World.
+			//World is Already Cleared.
+			break;
 
-			world[sx,sy,1] = 1; 
-			world[sx-1,sy-2,1] = 1;
-			world[sx-1,sy,1] = 1;
-			world[sx-3,sy-1,1] = 1; 
-			world[sx-4,sy,1] = 1; 
-			world[sx-5,sy,1] = 1; 
-			world[sx-6,sy,1] = 1; 
+			case 1:	//Randomized
+			for (int i = 0; i < sx * sy * density; i++) { world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1; }
+			break;	
+			
+			case 2: //Acorn	
+			int ax = (int) sx / 2;
+			int ay = (int) sy / 2;
+
+			world[ax,ay,1] = 1; 
+			world[ax-1,ay-2,1] = 1;
+			world[ax-1,ay,1] = 1;
+			world[ax-3,ay-1,1] = 1; 
+			world[ax-4,ay,1] = 1; 
+			world[ax-5,ay,1] = 1; 
+			world[ax-6,ay,1] = 1; 
 			break;
 		}
+
+		draw ();
 	}
 
 	/**
@@ -74,8 +82,8 @@ public class GameOfLife : MonoBehaviour {
 	 */ 
 	void draw()
 	{
-		for (int x = 0; x < board_size_x; x++) {
-			for (int y = 0; y < board_size_y; y++) {
+		for (int x = 0; x < sx; x++) {
+			for (int y = 0; y < sy; y++) {
 				texture.SetPixel (x, y, Color.black);
 				
 				if ((world [x, y, 1] == 1) || (world [x, y, 1] == 0 && world [x, y, 0] == 1)) {
@@ -103,34 +111,35 @@ public class GameOfLife : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown(KeyCode.Space)) {
-			pause = !pause;
+			SendMessage("TogglePause");
 		}
 
 		if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			step = true;
 		}
 
-		if (Input.GetKeyDown (KeyCode.F1)) {	//Random Seed
-			seed = 0;
-			generate();
-			draw ();
-			pause = true;
+		if (Input.GetKeyDown (KeyCode.F1)) {	//Clear Seed
+			SendMessage("generate",0);			
+			SendMessage("SetPause", true);
 		}
 
-		if (Input.GetKeyDown (KeyCode.F2)) {	//Acorn Seed
-			seed = 1;
-			generate();
-			draw ();
-			pause = true;
+		if (Input.GetKeyDown (KeyCode.F2)) {	//Random Seed
+			SendMessage("generate",1);
+			SendMessage("SetPause", true);
+		}
+
+		if (Input.GetKeyDown (KeyCode.F3)) {	//Acorn Seed
+			SendMessage("generate",2);
+			SendMessage("SetPause", true);
 		}
 
 		if (Input.GetMouseButton (0)) {
-			pause = true;
+			SendMessage("SetPause", true);
 			gridChange(0);
 		} 
 		
 		if(Input.GetMouseButton(1) ) {
-			pause = true;
+			SendMessage("SetPause", true);
 			gridChange(1);
 		} 
 
@@ -152,11 +161,11 @@ public class GameOfLife : MonoBehaviour {
 		if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
 			Vector2 pos;
 			
-			pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
-			pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
+			pos.x = Mathf.Round( (sx - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
+			pos.y = Mathf.Round( (sy - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
 			
-			pos.x = Mathf.Abs( (width - 1) - pos.x );
-			pos.y = Mathf.Abs( (height - 1) - pos.y );
+			pos.x = Mathf.Abs( (sx - 1) - pos.x );
+			pos.y = Mathf.Abs( (sy - 1) - pos.y );
 			
 			if(Debug.isDebugBuild) Debug.Log(pos);
 
@@ -175,40 +184,16 @@ public class GameOfLife : MonoBehaviour {
 			texture.Apply ();
 		}
 	}
-	
-	/**
-	 *  OnMouseDown EVENT using gameObject.collider
-	 */ 
-	/*void OnMouseDown() {
-		pause = true;
-
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		RaycastHit hit;
-
-		if(collider.Raycast(ray, out hit, Mathf.Infinity) ) {
-			Vector2 pos;
-
-			pos.x = Mathf.Round( (width - 1) * ( (hit.point.x - hit.collider.bounds.min.x) / hit.collider.bounds.size.x) );
-			pos.y = Mathf.Round( (height - 1) * ( (hit.point.y - hit.collider.bounds.min.y) / hit.collider.bounds.size.y) );
-
-			Debug.Log(pos);
-
-			world[(int) pos.x, (int) pos.y,0] = 1;
-			texture.SetPixel ((int) pos.x, (int) pos.y, Color.white);
-			texture.Apply ();
-		}
-	}*/
 
 	/**
 	 * Generates the NEXT generation
 	 */
 	private bool nextGeneration() {
 		//Birth and Death of Generation Next.
-		for (int x = 0; x < board_size_x; x++) {
-			for (int y = 0; y < board_size_y; y++) {
+		for (int x = 0; x < sx; x++) {
+			for (int y = 0; y < sy; y++) {
 				
 				int adj = getAdjacent ((int)x, (int)y);
-				//world [x, y, 1] = world [x, y, 0];
 
 				if (adj == 3 && world [x, y, 0] == 0) {
 					world [x, y, 1] = 1;
@@ -216,7 +201,6 @@ public class GameOfLife : MonoBehaviour {
 				
 				if ((adj < 2 || adj > 3) && world [x, y, 0] == 1) {
 					world [x, y, 1] = -1;
-					//world [x, y, 1] = 0;
 				}
 			}
 		}
@@ -230,13 +214,16 @@ public class GameOfLife : MonoBehaviour {
 	 * @param int y y-coordinate
 	 */
 	int getAdjacent(int x, int y) {
-		return 	world [(x + 1) % board_size_x, y, 0] +
-				world [(x + height - 1) % board_size_x, y, 0] +
-				world [x, (y + 1) % board_size_y, 0] +
-				world [x, (y + height- 1) % board_size_y, 0] +
-				world [(x + 1) % board_size_x, (y + 1) % board_size_y, 0] +
-				world [(x + height - 1) % board_size_x, (y + 1) % board_size_y, 0] +
-				world [(x + 1) % board_size_x, (y + height - 1) % board_size_y, 0] +
-				world [(x + height- 1) % board_size_x, (y + height - 1) % board_size_y, 0];   
+		return 	world [(x + 1) % sx, y, 0] +
+				world [(x + sx - 1) % sx, y, 0] +
+				world [x, (y + 1) % sy, 0] +
+				world [x, (y + sy - 1) % sy, 0] +
+				world [(x + 1) % sx, (y + 1) % sy, 0] +
+				world [(x + sx - 1) % sx, (y + 1) % sy, 0] +
+				world [(x + 1) % sx, (y + sy - 1) % sy, 0] +
+				world [(x + sx- 1) % sx, (y + sy - 1) % sy, 0];   
 	}
+
+	public void SetPause(bool a = true) { pause = a; }
+	public void TogglePause() { pause = !pause; }
 }
