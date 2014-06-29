@@ -38,27 +38,29 @@ public class controller_GUI : MonoBehaviour {
 		_genLabelText = "Generation: " + this._generation.ToString () + " Cells Active: " + this._alive.ToString();
 
 		GUI.Label( new Rect (0, Screen.height - 24, Screen.width / 2, 24 ), _genLabelText );
+
+		if (GUI.changed) {
+			if (_currentGenerationType != _generationTabSelected) {
+				_currentGenerationType = _generationTabSelected;
+				
+				BroadcastMessage("generate", (int) (_generationTabSelected+1));			
+				BroadcastMessage("SetPause", true);
+			}
+			
+			if (_currentGameType != _gameTabSelected) {
+				_currentGameType = _gameTabSelected;
+
+				BroadcastMessage("SetRules", (int) (_gameTabSelected+1));
+				BroadcastMessage("SetPause", true);
+			}
+		}
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		_genLabelText = "Generation: " + this._generation.ToString () + " Cells Active: " + this._alive.ToString();
-
-		if (_currentGenerationType != _generationTabSelected) {
-			_currentGenerationType = _generationTabSelected;
-
-			BroadcastMessage("generate", (int) (_generationTabSelected+1));			
-			BroadcastMessage("SetPause", true);
-		}
-
-		if (_currentGameType != _gameTabSelected) {
-			_currentGameType = _gameTabSelected;
-			Debug.Log(_gameTabSelected);
-
-			BroadcastMessage("SetRules", (int) (_gameTabSelected+1));
-			BroadcastMessage("SetPause", true);
-		}
 
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			Application.Quit();
