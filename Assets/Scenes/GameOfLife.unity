@@ -174,7 +174,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   density: .5
-  step: 0
 --- !u!23 &565524302
 Renderer:
   m_ObjectHideFlags: 0

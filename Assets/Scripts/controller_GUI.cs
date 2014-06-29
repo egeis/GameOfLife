@@ -5,27 +5,32 @@ public class controller_GUI : MonoBehaviour {
 
 	private int _currentGenerationType = 1;
 	private int _generationTabSelected = 1;
-	private int _currentGameType = 1;
-	private int _gameTabSelected = 1;
+	private int _currentGameType = 0;
+	private int _gameTabSelected = 0;
 
 	private string _genLabelText;
 	private int _generation = 1;
 	private int _alive = 0;
 
+	private string _savepath;
+
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 
 	void OnGUI() {
 		string[] _gen_toolbar = {"Clear", "Random", "Acorn"};
-		string[] _rules_toolbar = {"Original", "Set #2", "Set #3"};
-		
+		string[] _rules_toolbar = {"Original", "Mutation", "Resurrection"};
+
+		//_generationTabSelected = GUI.Toolbar (new Rect (0, 0, (Screen.width/2), (Screen.height / 8)), 0, _gen_toolbar);
+		//_gameTabSelected = GUI.Toolbar (new Rect ((Screen.width/2), 0, (Screen.width/2), (Screen.height / 8)), 0, _rules_toolbar)
+
 		GUILayout.BeginArea( new Rect(0,0, (Screen.width), (Screen.height/4) ) );
 		GUILayout.BeginHorizontal ();
 		
-		_generationTabSelected = GUILayout.Toolbar(_generationTabSelected, _gen_toolbar);
-		_currentGameType = GUILayout.Toolbar(_gameTabSelected, _rules_toolbar);
+		_generationTabSelected = GUILayout.Toolbar(_currentGenerationType, _gen_toolbar);
+		_gameTabSelected = GUILayout.Toolbar(_currentGameType, _rules_toolbar);
 
 		GUILayout.EndHorizontal ();
 		GUILayout.EndArea ();
@@ -33,7 +38,6 @@ public class controller_GUI : MonoBehaviour {
 		_genLabelText = "Generation: " + this._generation.ToString () + " Cells Active: " + this._alive.ToString();
 
 		GUI.Label( new Rect (0, Screen.height - 24, Screen.width / 2, 24 ), _genLabelText );
-
 	}
 	
 	// Update is called once per frame
@@ -43,20 +47,17 @@ public class controller_GUI : MonoBehaviour {
 
 		if (_currentGenerationType != _generationTabSelected) {
 			_currentGenerationType = _generationTabSelected;
-			switch(_generationTabSelected) {
-			case 0:
-				BroadcastMessage("generate", 1);			
-				BroadcastMessage("SetPause", true);
-				break;
-			case 1:
-				BroadcastMessage("generate", 2);
-				BroadcastMessage("SetPause", true);
-				break;
-			case 2:
-				BroadcastMessage("generate", 3);
-				BroadcastMessage("SetPause", true);
-				break;
-			}
+
+			BroadcastMessage("generate", (int) (_generationTabSelected+1));			
+			BroadcastMessage("SetPause", true);
+		}
+
+		if (_currentGameType != _gameTabSelected) {
+			_currentGameType = _gameTabSelected;
+			Debug.Log(_gameTabSelected);
+
+			BroadcastMessage("SetRules", (int) (_gameTabSelected+1));
+			BroadcastMessage("SetPause", true);
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -72,11 +73,11 @@ public class controller_GUI : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.F1)) {  //Quick Save
-			//TODO: Write Save.
+			BroadcastMessage("SaveGame");
 		}
 
 		if (Input.GetKeyDown (KeyCode.F2)) {  //Quick Load
-			//TODO: Write Load.
+			BroadcastMessage("LoadGame");
 		}
 		
 		if (Input.GetMouseButton (0)) {			//Mouse Left Click
