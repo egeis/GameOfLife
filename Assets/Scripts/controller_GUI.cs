@@ -21,7 +21,7 @@ public class controller_GUI : MonoBehaviour {
 
 	void OnGUI() {
 		string[] _gen_toolbar = {"Clear", "Random", "Acorn"};
-		string[] _rules_toolbar = {"Original", "Mutation", "Resurrection"};
+		string[] _rules_toolbar = {"Original", "Preditors", "Viral Infection"};
 
 		//_generationTabSelected = GUI.Toolbar (new Rect (0, 0, (Screen.width/2), (Screen.height / 8)), 0, _gen_toolbar);
 		//_gameTabSelected = GUI.Toolbar (new Rect ((Screen.width/2), 0, (Screen.width/2), (Screen.height / 8)), 0, _rules_toolbar)

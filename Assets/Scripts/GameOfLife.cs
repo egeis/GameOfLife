@@ -86,7 +86,7 @@ public class GameOfLife : MonoBehaviour {
 					world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1;
 				}
 
-				if( _rules == 2) {
+				if( _rules > 1) {
 					for (int i = 0; i < (int) (sx * sy * density / 10); i++) { 
 						world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 2;
 					}
@@ -125,7 +125,7 @@ public class GameOfLife : MonoBehaviour {
 					_alive++;
 				} 
 
-				if(_rules == 2)
+				if(_rules > 1)
 				{
 					if ((world [x, y, 1] == 2) || (world [x, y, 1] == 0 && world [x, y, 0] == 2)) {
 						world [x, y, 0] = 2;
@@ -211,25 +211,45 @@ public class GameOfLife : MonoBehaviour {
 
 				switch(_rules) {
 				case 1:
-					if (adj == 3 && world [x, y, 0] == 0) {					//Birth
+					//Birth
+					if (adj == 3 && world [x, y, 0] == 0) {
 						world [x, y, 1] = 1;
 					} 
-							
-					if ((adj < 2 || adj > 3) && world [x, y, 0] == 1) {		//Death
+						
+					//Death
+					if ((adj < 2 || adj > 3) && world [x, y, 0] == 1) {
 						world [x, y, 1] = -1;
 					}
 					break;
 				case 2:
-					int virus = getAdjacent((int) x, (int) y, 2);
+					int pAdj = getAdjacent((int) x, (int) y, 2);
 
+					if(world [x, y, 0] == 0) {
+						//if (adj == 3) world [x, y, 1] = 1;
+						if ( (adj >= 2 && adj <= 3) ) world [x, y, 1] = 1;
+					} else if(world [x, y, 0] == 1) {
+						if( pAdj >=1 || adj > 7) {
+							world [x, y, 1] = 2;
+						} else if ( (adj < 2 || adj > 3) ) { 
+							world [x, y, 1] = -1;
+						}
+
+					} else if (world [x, y, 0] == 2) {
+						if ( adj < 2 || pAdj > 1) world [x, y, 1] = -1;
+					}
+
+					break;
+				case 3:
+					int virus = getAdjacent((int) x, (int) y, 2);
+					
 					if ( (adj == 0 || virus > 3)  && world [x, y, 0] == 2) {	//Burn-out
 						world [x, y, 1] = -1;
 					}
-
+					
 					if( virus > 1 && world [x, y, 0] == 1) {	//Infect
 						world [x, y, 1] = 2;
 					}
-
+					
 					// Original Cells
 					if (adj == 3 && world [x, y, 0] == 0) {		//Birth
 						world [x, y, 1] = 1;
@@ -238,22 +258,11 @@ public class GameOfLife : MonoBehaviour {
 					if ( adj < 2 && world [x, y, 0] == 1) {		//Death
 						world [x, y, 1] = -1;
 					}
-
+					
 					if (adj > 3 && world [x, y, 0] == 1) { 		//Mutate [Chance]
 						world [x, y, 1] = (int) Mathf.Floor(Random.Range(0,2.05f));
 						if(world [x, y, 1] == 0) world [x, y, 1] = -1;
 					}
-
-					break;
-				case 3:
-					if (adj == 3 && world [x, y, 0] == 0) {					//Birth
-						world [x, y, 1] = 1;
-					} 
-					
-					if ((adj < 2 || adj > 3) && world [x, y, 0] == 1) {		//Death
-						world [x, y, 1] = -1;
-					}
-
 					break;
 				}
 			}
