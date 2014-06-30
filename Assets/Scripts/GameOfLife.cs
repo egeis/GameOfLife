@@ -86,7 +86,7 @@ public class GameOfLife : MonoBehaviour {
 					world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 1;
 				}
 
-				if( _rules > 1) {
+				if( _rules > 2) {
 					for (int i = 0; i < (int) (sx * sy * density / 10); i++) { 
 						world[(int)(Random.value*sx), (int)(Random.value*sy), 1] = 2;
 					}
@@ -225,7 +225,6 @@ public class GameOfLife : MonoBehaviour {
 					int pAdj = getAdjacent((int) x, (int) y, 2);
 
 					if(world [x, y, 0] == 0) {
-						//if (adj == 3) world [x, y, 1] = 1;
 						if ( (adj >= 2 && adj <= 3) ) world [x, y, 1] = 1;
 					} else if(world [x, y, 0] == 1) {
 						if( pAdj >=1 || adj > 7) {
