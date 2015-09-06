@@ -5,6 +5,7 @@
 [Oo]bj/
 [Uu]nityGenerated/
 [Ll]ibrary/
+[Bb]uild/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -65,8 +66,6 @@
 ._*
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
 Icon?
 ehthumbs.db
 Thumbs.db
