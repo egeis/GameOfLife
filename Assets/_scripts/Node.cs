@@ -8,7 +8,7 @@ public class Node : MonoBehaviour {
 	public const int ALIVE = 1;			// Cell On		
 
 	private int _state = 0;				// Status of Cell
-	public List<Node> adjacent = new List<Node>();	// To Trigger Update Events.
+//	public List<Node> adjacent = new List<Node>();	// To Trigger Update Events.
 
 	//Extended RuleSet
 	/*public const int MALE = 1;				
