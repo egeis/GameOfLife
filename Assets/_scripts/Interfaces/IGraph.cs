@@ -11,9 +11,7 @@ namespace AssemblyCSharp
 		void removeVertex(GameObject go);
 		void addEdge(GameObject go1, GameObject go2);
 		void removeEdge(GameObject go1, GameObject go2);
-		List<GameObject> getEdge(GameObject go);
-		int size();
-		bool isEmpty();
+		List<GameObject> getAdj (GameObject go);
 		bool isConnected();
 	}
 }
