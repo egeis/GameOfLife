@@ -2,16 +2,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AssemblyCSharp;
 
-public class Node : MonoBehaviour {
+public class Node : MonoBehaviour,
+					INode 
+{
 	public const int DEAD = 0;			// Cell Off	
 	public const int ALIVE = 1;			// Cell On		
 
 	private int _state = 0;				// Status of Cell
+	private int _next_state = 0;
+
+	public void TriggerNextGeneration()
+	{
+		_state = _next_state;
+		_next_state = 0;
+	}
 
 	public int State {
 		get { return this._state; }
-		set { this._state = value; }
+		set { this._next_state = value; }
 	}
 	
 	public float X {

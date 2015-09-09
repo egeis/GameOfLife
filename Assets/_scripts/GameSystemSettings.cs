@@ -15,8 +15,16 @@ public class GameSystemSettings : MonoBehaviour
 	public int height = 1;
 	public int depth = 100;
 	public string type = "TYPE_RANDOM";
+
 	public GameObject prefab;
-	
+
+	public bool WRAP_XZ = true;
+
+	public GameObject DEBUG_LINE_PERM;
+	public bool DEBUG_LINES_ENABLE = true;
+	public bool DEBUG_WRAP_ENABLE = true;
+
+
 	void Awake() {
 		_instance = this;
 	}
