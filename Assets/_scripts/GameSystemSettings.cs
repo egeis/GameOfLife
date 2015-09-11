@@ -24,6 +24,12 @@ public class GameSystemSettings : MonoBehaviour
 	public bool DEBUG_LINES_ENABLE = true;
 	public bool DEBUG_WRAP_ENABLE = true;
 
+	public bool DEBUG_X   = true;
+	public bool DEBUG_Y   = true;
+	public bool DEBUG_Z   = true;
+	public bool DEBUG_X_Y = true;
+	public bool DEBUG_X_Z = true;
+	public bool DEBUG_Y_Z = true;
 
 	void Awake() {
 		_instance = this;
