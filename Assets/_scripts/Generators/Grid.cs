@@ -17,22 +17,12 @@ namespace AssemblyCSharp
 			_gss = gss;
 		}
 
-		protected void DrawLine(GameObject go1, Color c1, GameObject go2,  Color c2)
-		{
-			GameObject line = UnityEngine.GameObject.Instantiate( _gss.DEBUG_LINE_PERM, new Vector3(0,0,0), Quaternion.identity )  as GameObject;
-			line.name = "Line_" + go1.transform.position.ToString () + "_" + go2.transform.position.ToString ();
-			LineRenderer lineRenderer = line.GetComponent<LineRenderer>();
-			lineRenderer.SetColors(c1,c2);
-			lineRenderer.SetPosition(0, go1.transform.position);
-			lineRenderer.SetPosition(1, go2.transform.position);
-		}
-
 		public void Destroy ()
 		{
 
 		}
 
-		public void Create ()
+		public Graph Create ()
 		{
 			Debug.Log ("Creating World:");
 			Debug.Log ("Using..." + _gss.prefab.name);
@@ -46,6 +36,7 @@ namespace AssemblyCSharp
 					{
 						GameObject cell = UnityEngine.GameObject.Instantiate(_gss.prefab, new Vector3(i,j,k), Quaternion.identity) as GameObject;
 						cell.name = "Cell_"+i+"_"+j+"_"+k;
+						_graph.addVertex(cell);
 					}
 				}
 			}
@@ -81,7 +72,6 @@ namespace AssemblyCSharp
 
 					for (float k = 0; k < (_gss.depth * _gss._step); k += _gss._step)
 					{ //Z
-
 						GameObject go1, go2;
 
 						//Find the First Cell
@@ -97,97 +87,135 @@ namespace AssemblyCSharp
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+j+"_"+k);			//X+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X) 
-								this.DrawLine(go1, ghost_blue, go2, ghost_blue);
+								DebugTools.DrawLine(go1, ghost_blue, go2, ghost_blue);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !yn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+i+"_"+yn+"_"+k);  		//Y+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_Y) 
-								this.DrawLine(go1, ghost_blue, go2, ghost_blue);
+								DebugTools.DrawLine(go1, ghost_blue, go2, ghost_blue);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !zn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+i+"_"+j+"_"+zn);			//Z+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_blue, go2, ghost_blue);
+								DebugTools.DrawLine(go1, ghost_blue, go2, ghost_blue);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xn_wrap && !zn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+j+"_"+zn);			//X+,Z+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_green, go2, ghost_green);
+								DebugTools.DrawLine(go1, ghost_green, go2, ghost_green);
+
+							_graph.addEdge(go1,go2);
 						}
+
 
 						if( !xn_wrap && !zp_wrap )
 						{
-							go2 = GameObject.Find("Cell_"+xn+"_"+j+"_"+zp);			//-X,Z+
+							go2 = GameObject.Find("Cell_"+xn+"_"+j+"_"+zp);			//X-,Z+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_green, go2, ghost_green);
+								DebugTools.DrawLine(go1, ghost_green, go2, ghost_green);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xn_wrap && !yn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+yn+"_"+k);			//X+,Y+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y) 
-								this.DrawLine(go1, ghost_red, go2, ghost_red);
+								DebugTools.DrawLine(go1, ghost_red, go2, ghost_red);
+
+							_graph.addEdge(go1,go2);
+						}
+
+						if( !xn_wrap && !yn_wrap )
+						{
+							go2 = GameObject.Find("Cell_"+xp+"_"+yn+"_"+k);			//X-,Y+
+							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y) 
+								DebugTools.DrawLine(go1, ghost_red, go2, ghost_red);
+							
+							_graph.addEdge(go1,go2);
 						}
 
 						if(xn_wrap && yp_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+yp+"_"+k);			//X+,Y-
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y) 
-								this.DrawLine(go1, ghost_red, go2, ghost_red);
+								DebugTools.DrawLine(go1, ghost_red, go2, ghost_red);
+
+							_graph.addEdge(go1,go2);
 						}
+
+			
 
 						if( !yn_wrap && !zn_wrap )
 						{
 						go2 = GameObject.Find("Cell_"+i+"_"+yn+"_"+zn);				//Y+,Z+
 						if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-							this.DrawLine(go1, ghost_purple, go2, ghost_purple);
+								DebugTools.DrawLine(go1, ghost_purple, go2, ghost_purple);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !yn_wrap && !zp_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+i+"_"+yn+"_"+zp);			//Y+,Z-
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_purple, go2, ghost_purple);
+								DebugTools.DrawLine(go1, ghost_purple, go2, ghost_purple);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xn_wrap && !yn_wrap && !zp_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+yn+"_"+zp);			//X+,Y+,Z-
 								if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-									this.DrawLine(go1, ghost_purple, go2, ghost_purple);
+								DebugTools.DrawLine(go1, ghost_purple, go2, ghost_purple);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xp_wrap && !yn_wrap && !zp_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xp+"_"+yn+"_"+zp);			//X-,Y+,Z-
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_red, go2, ghost_red);
+								DebugTools.DrawLine(go1, ghost_red, go2, ghost_red);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xn_wrap && !yn_wrap && !zn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xn+"_"+yn+"_"+zn);			//X+,Y+,Z+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_purple, go2, ghost_purple);
+								DebugTools.DrawLine(go1, ghost_purple, go2, ghost_purple);
+
+							_graph.addEdge(go1,go2);
 						}
 
 						if( !xp_wrap && !yn_wrap && !zn_wrap )
 						{
 							go2 = GameObject.Find("Cell_"+xp+"_"+yn+"_"+zn);			//X-,Y+,Z+
 							if(_gss.DEBUG_LINES_ENABLE && _gss.DEBUG_X && _gss.DEBUG_Y && _gss.DEBUG_Z) 
-								this.DrawLine(go1, ghost_red, go2, ghost_red);
+								DebugTools.DrawLine(go1, ghost_red, go2, ghost_red);
+
+							_graph.addEdge(go1,go2);
 						}
 					}
 				}
 			}
 
-
+			return _graph;
 		}
 
 	}

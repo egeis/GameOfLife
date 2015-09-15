@@ -23,6 +23,9 @@ public class GameSystemSettings : MonoBehaviour
 	public bool WRAP = true;
 
 	public GameObject DEBUG_LINE_PERM;
+
+	public Texture LoadingScreen;
+
 	public bool DEBUG_LINES_ENABLE = true;
 
 	public bool DEBUG_X   = true;

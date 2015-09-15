@@ -74,6 +74,11 @@ namespace AssemblyCSharp
 		{
 			throw new NotImplementedException ();
 		}
+
+		public override string ToString ()
+		{
+			return string.Format ("[Graph: Size={0}, isEmpty={1}]", Size, isEmpty);
+		}
 	}
 }
 

@@ -8,7 +8,7 @@ namespace AssemblyCSharp
 	public interface IWorld
 	{
 		void Destroy();
-		void Create();
+		Graph Create();
 	}
 }
 

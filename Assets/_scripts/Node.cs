@@ -10,9 +10,9 @@ public class Node : MonoBehaviour,
 	public const int DEAD = 0;			// Cell Off	
 	public const int ALIVE = 1;			// Cell On		
 
-	private int _state = 0;				// Status of Cell
-	private int _next_state = 0;
-
+	protected int _state = 0;				// Status of Cell
+	protected int _next_state = 0;
+	
 	public void TriggerNextGeneration()
 	{
 		_state = _next_state;
@@ -35,5 +35,4 @@ public class Node : MonoBehaviour,
 	public float Z {
 		get { return this.transform.position.z; }
 	}
-	
 }
