@@ -15,6 +15,7 @@ public class GameSystemSettings : MonoBehaviour
 	public int height = 1;
 	public int depth = 100;
 	public float _step = 2.0f;
+	public float ActiveChance = 0.2f;
 
 	public string type = "TYPE_RANDOM";
 
@@ -27,10 +28,6 @@ public class GameSystemSettings : MonoBehaviour
 	public Texture LoadingScreen;
 
 	public bool DEBUG_LINES_ENABLE = true;
-
-	public bool DEBUG_X   = true;
-	public bool DEBUG_Y   = true;
-	public bool DEBUG_Z   = true;
 
 	void Awake() {
 		_instance = this;

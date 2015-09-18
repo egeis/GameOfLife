@@ -79,6 +79,10 @@ namespace AssemblyCSharp
 		{
 			return string.Format ("[Graph: Size={0}, isEmpty={1}]", Size, isEmpty);
 		}
+
+		public List<GameObject> GetElements {
+			get { return _graph; }
+		}
 	}
 }
 

@@ -8,7 +8,6 @@ public class GameInit : MonoBehaviour
 {
 	private GameSystemSettings _gss;
 	private Graph _graph;
-	private bool _loading = true;
 
 	IWorld world;
 
@@ -21,6 +20,9 @@ public class GameInit : MonoBehaviour
 
 		world = new Grid(_gss);
 		_graph = world.Create ();
+
+		Debug.Log (Time.time);
+		Debug.Log (Time.time + 1.0f);
 
 		_PostInit ();
 	}
@@ -41,47 +43,74 @@ public class GameInit : MonoBehaviour
 
 		Camera.main.transform.position = pos;
 		Camera.main.transform.Rotate (rot);
+
+		InvokeRepeating ("NextGeneration", 0, 5.0f);
 	}
 
 	void OnGUI()
 	{
-		if (_loading)
-			GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), _gss.LoadingScreen, ScaleMode.ScaleAndCrop);
+		//if (_loading)
+		//	GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), _gss.LoadingScreen, ScaleMode.ScaleAndCrop);
+	}
+
+	/** @TODO Create a Class / Interface for rulesets seperate as a coroutine or other async task **/
+	private void NextGeneration()
+	{
+		Debug.Log ("Starting Update of Next Generation");
+
+		foreach (GameObject g in _graph.GetElements)
+		{
+			Node n = g.GetComponent<Node>();
+			int c = 0;
+
+			foreach(GameObject sg in _graph.getAdj(g))
+			{
+				c += (sg.GetComponent<Node>().State == Node.ALIVE)?1:0;
+			}
+
+			if(c < 2)												//Under-Population
+				n.State = Node.DEAD;
+			else if ( (c >=2 || c <= 3) && n.State == Node.ALIVE)	//Survival
+				n.State = Node.ALIVE;							
+			else if ( c > 3)										//Over-Population
+				n.State = Node.DEAD;							
+			else if (c == 3 && n.State == Node.DEAD)				//Repopulation
+				n.State = Node.ALIVE;
+		}
+
+		foreach (GameObject g in _graph.GetElements) {
+			g.BroadcastMessage("TriggerNextGeneration");
+		}
 	}
 
 	// Update is called once per frame
 	void Update(){
+		if (Input.GetMouseButtonDown (0)) {
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast (ray, out hit)) {
+				GameObject go1 = hit.transform.gameObject;
+				List<GameObject> adj = _graph.getAdj (go1);
+				Color c = new Color (1.0f, 1.0f, 1.0f, 1.0f);
 
-		if(Application.isLoadingLevel)
-		{
-			_loading = true;
-		} else {
-			_loading = false;
+				int alive = 0;
 
-			if (Input.GetMouseButtonDown (0)) {
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-				RaycastHit hit;
-				if (Physics.Raycast (ray, out hit)) {
-					Debug.Log (hit.transform.gameObject.name);
+				go1.GetComponent<Node>().State = Node.DEAD;
 
-					GameObject go1 = hit.transform.gameObject;
-					List<GameObject> adj = _graph.getAdj (go1);
+				foreach (GameObject g in adj) {
+					Node n = g.GetComponent<Node>();
+					if (n.State == Node.ALIVE) alive++;
 
-					Color c = new Color (Random.value, Random.value, Random.value, 0.25f);
+					GameObject l = DebugTools.DrawLine (go1, c, g, c);
 
-					Renderer r = go1.GetComponent<Renderer> ();
-					r.material.color = c;
-
-					Debug.Log (adj.Count);
-
-					foreach (GameObject g in adj) {
-						r = g.GetComponent<Renderer> ();
-						r.material.color = c;
-
-						DebugTools.DrawLine (go1, c, g, c);
-					}
+					l.AddComponent<LineHelper>();
+					l.BroadcastMessage("TriggerFade");
 				}
+
+				Debug.Log (go1.name + " Status:"+go1.GetComponent<Node>().State);
+				Debug.Log ("Adj: "+adj.Count+" LA:"+alive);
 			}
-		}
+		} 
+
 	}
 }
