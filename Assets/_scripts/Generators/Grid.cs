@@ -19,7 +19,11 @@ namespace AssemblyCSharp
 
 		public void Destroy ()
 		{
+			foreach (GameObject g in _graph.GetElements) {
+				GameObject.Destroy(g);
+			}
 
+			_gss.graph = new Graph ();
 		}
 
 		public Graph Create ()

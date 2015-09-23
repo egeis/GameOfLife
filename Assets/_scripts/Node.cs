@@ -7,13 +7,45 @@ using AssemblyCSharp;
 public class Node : MonoBehaviour,
 					INode 
 {
+	private GameSystemSettings _gss;
+
 	public const int DEAD = 0;			// Cell Off	
-	public const int ALIVE = 1;			// Cell On		
+	public const int ALIVE = 1;			// Cell On
+
+	public static int generation = 0;
 
 	protected int _state = 0;			// Status of Cell
-	protected int _next_state = 0;
-	protected int _last_state = 0;
+	protected int _next_state = 0;		
+	protected int _last_state = 0;		
 	
+	public Node()
+	{
+		_gss = GameSystemSettings.Instance;
+	}
+
+	public int[] AdjacentStates {
+		get { return CalculateAdjStates(); }
+	}
+
+	public  int[] CalculateAdjStates() {
+		int[] _adjStates = new int[2];
+
+		foreach(GameObject sg in _gss.graph.getAdj(this.gameObject) )
+		{
+			switch(sg.GetComponent<Node>().State)
+			{
+				case Node.ALIVE:
+					_adjStates[1] += 1;
+					break;
+				case Node.DEAD:
+					_adjStates[0] += 1;
+					break;
+			}
+		}
+
+		return _adjStates;
+	}
+
 	public void TriggerNextGeneration()
 	{
 		_last_state = _state;
@@ -23,16 +55,15 @@ public class Node : MonoBehaviour,
 		if (_last_state != _state) {
 			if(_state == ALIVE)
 			{
-				//StopCoroutine("Fade");
+				StopCoroutine("Fade");
 				StartCoroutine("Fade",1);
 			}
 			else if (_state == DEAD)
 			{
-				//StopCoroutine("Fade");
+				StopCoroutine("Fade");
 				StartCoroutine("Fade",0);
 			}
 		}
-
 	}
 
 	public int InitState {
@@ -63,8 +94,9 @@ public class Node : MonoBehaviour,
 		for( int i = 0; i < 10; i++ )
 		{
 			float t = color.a + inc;
-			t = (t < 0.0f)?0.0f:t;
-			t = (t > 1.0f)?1.0f:t;
+
+			t = (t < 0.0f)?0.0f:t;	//Min
+			t = (t > 1.0f)?1.0f:t;	//Max
 
 			color.a = t;
 

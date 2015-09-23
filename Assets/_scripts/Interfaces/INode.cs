@@ -10,4 +10,3 @@ namespace AssemblyCSharp
 		void TriggerNextGeneration();
 	}
 }
-
