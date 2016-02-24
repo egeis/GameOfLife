@@ -24,8 +24,6 @@ public class GameInit : MonoBehaviour
         _gs.loadingSavedState = false;      // TODO: remove after creating loading / saving methods.
         loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
 
-        Vector3 newCamPos = new Vector3(_gs.cellRows / 2.0f, _gs.cellColumns / 2.0f, -10f);
-        _gs.mainCamera.transform.position = newCamPos;
 
         if (_gs.loadingSavedState)
         {
@@ -61,7 +59,7 @@ public class GameInit : MonoBehaviour
         {
             for (int j = 0; j < _gs.cellColumns; j++)
             {
-                Vector3 position = new Vector3(i, j, 0);
+                Vector3 position = new Vector3(i - _gs.cellRows / 2.0f, j - _gs.cellColumns / 2.0f, 0);
                 GameObject cell = Instantiate(_gs.prefab, Vector3.zero, Quaternion.identity) as GameObject;
                 cell.transform.position = position;
                 cell.transform.parent = GameObject.Find("GameBoard").transform;
