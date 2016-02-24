@@ -1,0 +1,268 @@
+fileFormatVersion: 2
+guid: 588681b61145e7043a0c93308e75703e
+timeCreated: 1455506847
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: SheetSmallGlider_0
+    21300002: SheetSmallGlider_1
+    21300004: SheetSmallGlider_2
+    21300006: SheetSmallGlider_3
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 2
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 256
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: SheetSmallGlider_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -117, y: -46}
+        - {x: -125, y: -59}
+        - {x: -125, y: -119}
+        - {x: -116, y: -125}
+        - {x: -46, y: -125}
+        - {x: -46, y: -46}
+      - - {x: -17, y: -46}
+        - {x: -27, y: -49}
+        - {x: -40, y: -60}
+        - {x: -40, y: -105}
+        - {x: -33, y: -125}
+        - {x: 33, y: -125}
+        - {x: 40, y: -102}
+        - {x: 40, y: -63}
+        - {x: 21, y: -46}
+      - - {x: 58, y: -46}
+        - {x: 46, y: -61}
+        - {x: 46, y: -108}
+        - {x: 50, y: -123}
+        - {x: 65, y: -125}
+        - {x: 111, y: -125}
+        - {x: 125, y: -120}
+        - {x: 125, y: -46}
+      - - {x: 57, y: 40}
+        - {x: 46, y: 35}
+        - {x: 46, y: -36}
+        - {x: 63, y: -40}
+        - {x: 114, y: -40}
+        - {x: 125, y: -21}
+        - {x: 125, y: 21}
+        - {x: 111, y: 40}
+      - - {x: -25, y: 125}
+        - {x: -40, y: 121}
+        - {x: -40, y: 62}
+        - {x: -21, y: 46}
+        - {x: 21, y: 46}
+        - {x: 28, y: 48}
+        - {x: 40, y: 62}
+        - {x: 40, y: 123}
+        - {x: 39, y: 125}
+    - name: SheetSmallGlider_1
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -17, y: -46}
+        - {x: -27, y: -49}
+        - {x: -40, y: -60}
+        - {x: -40, y: -105}
+        - {x: -33, y: -125}
+        - {x: 33, y: -125}
+        - {x: 40, y: -102}
+        - {x: 40, y: -63}
+        - {x: 21, y: -46}
+      - - {x: -24, y: 40}
+        - {x: -40, y: 21}
+        - {x: -40, y: -20}
+        - {x: -30, y: -40}
+        - {x: 30, y: -40}
+        - {x: 40, y: -30}
+        - {x: 40, y: 25}
+        - {x: 36, y: 40}
+      - - {x: 57, y: 40}
+        - {x: 46, y: 35}
+        - {x: 46, y: -36}
+        - {x: 63, y: -40}
+        - {x: 114, y: -40}
+        - {x: 125, y: -21}
+        - {x: 125, y: 21}
+        - {x: 111, y: 40}
+      - - {x: -60, y: 125}
+        - {x: -118, y: 125}
+        - {x: -125, y: 124}
+        - {x: -125, y: 55}
+        - {x: -107, y: 46}
+        - {x: -58, y: 46}
+        - {x: -46, y: 61}
+        - {x: -46, y: 104}
+        - {x: -48, y: 111}
+      - - {x: 56, y: 125}
+        - {x: 46, y: 108}
+        - {x: 46, y: 70}
+        - {x: 49, y: 60}
+        - {x: 59, y: 46}
+        - {x: 107, y: 46}
+        - {x: 125, y: 68}
+        - {x: 125, y: 119}
+        - {x: 106, y: 125}
+    - name: SheetSmallGlider_2
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: -46}
+        - {x: -40, y: -55}
+        - {x: -40, y: -112}
+        - {x: -34, y: -125}
+        - {x: 27, y: -125}
+        - {x: 40, y: -107}
+        - {x: 40, y: -52}
+        - {x: 34, y: -46}
+      - - {x: 55, y: -46}
+        - {x: 45, y: -48}
+        - {x: 45, y: -108}
+        - {x: 62, y: -125}
+        - {x: 112, y: -125}
+        - {x: 125, y: -121}
+        - {x: 125, y: -57}
+        - {x: 115, y: -46}
+      - - {x: -121, y: 40}
+        - {x: -125, y: 27}
+        - {x: -125, y: -36}
+        - {x: -108, y: -40}
+        - {x: -48, y: -40}
+        - {x: -46, y: -39}
+        - {x: -46, y: 40}
+      - - {x: 57, y: 40}
+        - {x: 46, y: 35}
+        - {x: 46, y: -36}
+        - {x: 63, y: -40}
+        - {x: 114, y: -40}
+        - {x: 125, y: -21}
+        - {x: 125, y: 21}
+        - {x: 111, y: 40}
+      - - {x: 56, y: 125}
+        - {x: 46, y: 108}
+        - {x: 46, y: 70}
+        - {x: 49, y: 60}
+        - {x: 59, y: 46}
+        - {x: 107, y: 46}
+        - {x: 125, y: 68}
+        - {x: 125, y: 119}
+        - {x: 106, y: 125}
+    - name: SheetSmallGlider_3
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 768
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -117, y: -46}
+        - {x: -125, y: -59}
+        - {x: -125, y: -119}
+        - {x: -116, y: -125}
+        - {x: -46, y: -125}
+        - {x: -46, y: -46}
+      - - {x: -17, y: -46}
+        - {x: -27, y: -49}
+        - {x: -40, y: -60}
+        - {x: -40, y: -105}
+        - {x: -33, y: -125}
+        - {x: 33, y: -125}
+        - {x: 40, y: -102}
+        - {x: 40, y: -63}
+        - {x: 21, y: -46}
+      - - {x: -24, y: 40}
+        - {x: -40, y: 21}
+        - {x: -40, y: -20}
+        - {x: -30, y: -40}
+        - {x: 30, y: -40}
+        - {x: 40, y: -30}
+        - {x: 40, y: 25}
+        - {x: 36, y: 40}
+      - - {x: 57, y: 40}
+        - {x: 46, y: 35}
+        - {x: 46, y: -36}
+        - {x: 63, y: -40}
+        - {x: 114, y: -40}
+        - {x: 125, y: -21}
+        - {x: 125, y: 21}
+        - {x: 111, y: 40}
+      - - {x: -60, y: 125}
+        - {x: -118, y: 125}
+        - {x: -125, y: 124}
+        - {x: -125, y: 55}
+        - {x: -107, y: 46}
+        - {x: -58, y: 46}
+        - {x: -46, y: 61}
+        - {x: -46, y: 104}
+        - {x: -48, y: 111}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
