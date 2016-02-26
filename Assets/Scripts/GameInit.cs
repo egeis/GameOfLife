@@ -64,6 +64,15 @@ public class GameInit : MonoBehaviour
                 cell.transform.position = position;
                 cell.transform.parent = GameObject.Find("GameBoard").transform;
 
+                if (UnityEngine.Random.value < 0.2f)
+                {
+                    cell.GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
+                }
+                else
+                {
+                    cell.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 0.2f, 1f);
+                }
+
                 Cells.Add(position, cell);
 
                 //TODO: Create a Initial Cell Object

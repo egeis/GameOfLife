@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 
 public class GlobalSettings : MonoBehaviour
@@ -36,6 +37,14 @@ public class GlobalSettings : MonoBehaviour
     public bool animatedStateChanges = true;
 
     public Camera mainCamera;
+
+    public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
+
+    [HideInInspector]
+    public int activeCells = 0;
+
+    [HideInInspector]
+    public int totalCells = 0;
 
     public int getCurrentGeneration()
     {

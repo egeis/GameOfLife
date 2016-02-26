@@ -23,8 +23,8 @@ public class Movement : MonoBehaviour {
         minX = horzExtent - _gs.cellRows / 2.0f;
         maxX = _gs.cellRows / 2.0f - horzExtent;
 
-        minY = vertExtent - _gs.cellColumns / 2.0f;
-        maxY = _gs.cellColumns / 2.0f - vertExtent;
+        minY = vertExtent - _gs.cellColumns / 2.0f - 0.5f;
+        maxY = _gs.cellColumns / 2.0f - vertExtent + 0.5f;
 
         Debug.logger.Log(minX + " " + maxX + " " + minY + " " + maxY);
     }
