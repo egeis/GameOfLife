@@ -13,32 +13,17 @@ public class GameInit : MonoBehaviour
 
     private LanguageManager languageManager;
 
-    public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
-
 	// Use this for initialization
 	void Start ()
     {
         _gs = GlobalSettings.Instance;
         languageManager = LanguageManager.Instance;
 
-        _gs.loadingSavedState = false;      // TODO: remove after creating loading / saving methods.
         loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
 
-
-        if (_gs.loadingSavedState)
-        {
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Prev.State");
-            generateWorld();
-            loadPreviousCellStates();
-
-            //Pregenerate World
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Prev.Pregen");
-        }
-        else
-        {
-            // GENERATING NEW WORLD
+        {   // GENERATING NEW WORLD
             statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.State");
-            generateWorld();
+            //generateWorld();
 
             //Pregenerate World
             statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.Pregen");
@@ -73,7 +58,7 @@ public class GameInit : MonoBehaviour
                     cell.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 0.2f, 1f);
                 }
 
-                Cells.Add(position, cell);
+                _gs.Cells.Add(position, cell);
 
                 //TODO: Create a Initial Cell Object
             }

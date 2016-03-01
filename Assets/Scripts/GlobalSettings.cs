@@ -10,6 +10,16 @@ public class GlobalSettings : MonoBehaviour
         get { return _instance; }
     }
 
+    public enum Rules
+    {
+        [StringValue("Rules.Classic")]
+        Classic,
+        [StringValue("Rules.Preditors")]
+        Preditors,
+        [StringValue("Rules.ViralInfection")] 
+        ViralInfection
+    }
+
     private static GlobalSettings _instance;
     private int current_generation = 0;
     private int processed_generation = 0;
@@ -18,8 +28,7 @@ public class GlobalSettings : MonoBehaviour
     public GameObject loadingInterface;
     public GameObject gameboard;
 
-    public bool loadingSavedState = false;
-    public string savedStateId = "";
+    public Rules RuleSet = Rules.Classic;
 
     [Range(1, 10)]
     public int maxGenerationsPerSecond = 2;
@@ -38,7 +47,11 @@ public class GlobalSettings : MonoBehaviour
 
     public Camera mainCamera;
 
+    [HideInInspector]
     public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
+
+    [HideInInspector]
+    public Dictionary<Vector4, int> FutureCellStates = new Dictionary<Vector4, int>();
 
     [HideInInspector]
     public int activeCells = 0;
