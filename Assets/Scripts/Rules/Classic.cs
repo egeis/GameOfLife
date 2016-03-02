@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Classic : IRuleset
 {
-    public string unlocalizedName = "UI.Rules.Classic.Name";
+    private string unlocalizedName = "UI.Rules.Classic.Name";
+    public string UnlocalizedName { get { return unlocalizedName; } }
 
     private Dictionary<int, Func<int[], int, int>> Rules = new Dictionary<int, Func<int[], int, int>>
     {
@@ -12,8 +13,6 @@ public class Classic : IRuleset
         {1, CheckRuleDeath}
     };
     public Dictionary<int, Func<int[], int, int>> getRuleset() { return Rules; }
-
-    public Classic() {}
 
     public enum States
     {

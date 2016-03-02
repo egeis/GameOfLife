@@ -46,7 +46,8 @@ public class GameInit : MonoBehaviour
 
     void registerDefault()
     {
-        //rulesManager.register()
+        IRuleset rules = new Classic();
+        rulesManager.register(rules.UnlocalizedName, rules);
     }
 
 
