@@ -12,14 +12,20 @@ public class GameInit : MonoBehaviour
     public GameObject loadingText;
 
     private LanguageManager languageManager;
+    private RulesManager rulesManager;
+
+    public Dictionary<string, IRuleset> Rulesets = new Dictionary<string, IRuleset>();
 
 	// Use this for initialization
 	void Start ()
     {
         _gs = GlobalSettings.Instance;
         languageManager = LanguageManager.Instance;
+        rulesManager = RulesManager.Instance;
 
         loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
+        registerDefault();
+
 
         {   // GENERATING NEW WORLD
             statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.State");
@@ -37,6 +43,12 @@ public class GameInit : MonoBehaviour
     {
 	    
 	}
+
+    void registerDefault()
+    {
+        //rulesManager.register()
+    }
+
 
     void generateWorld()
     {
@@ -65,14 +77,5 @@ public class GameInit : MonoBehaviour
         }
     }
 
-    void loadPreviousCellStates()
-    {
-        for (int i = 0; i > _gs.cellRows; i++)
-        {
-            for (int j = 0; j > _gs.cellColumns; j++)
-            {
-
-            }
-        }
-    }
+  
 }

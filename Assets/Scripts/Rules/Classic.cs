@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class Classic : IRuleset
 {
+    public string unlocalizedName = "UI.Rules.Classic.Name";
+
     private Dictionary<int, Func<int[], int, int>> Rules = new Dictionary<int, Func<int[], int, int>>
     {
         {0, CheckRuleBirth},
-        {0, CheckRuleDeath}
+        {1, CheckRuleDeath}
     };
+    public Dictionary<int, Func<int[], int, int>> getRuleset() { return Rules; }
+
+    public Classic() {}
 
     public enum States
     {
@@ -46,5 +52,13 @@ public class Classic : IRuleset
         return next_state;
     }
 
-    public Dictionary<int, Func<int[], int, int>> getRuleset() { return Rules; }
+    public string getStringValue(Enum value)
+    {
+        return StringEnum.getStringValue(value);
+    }
+
+    public Color getColorValue(Enum value)
+    {
+        return ColorEnum.getColorValue(value);
+    }
 }
