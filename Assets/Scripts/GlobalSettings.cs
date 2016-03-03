@@ -22,7 +22,6 @@ public class GlobalSettings : MonoBehaviour
 
     private static GlobalSettings _instance;
     private int current_generation = 0;
-    private int processed_generation = 0;
 
     public GameObject prefab;
     public GameObject loadingInterface;
@@ -36,10 +35,10 @@ public class GlobalSettings : MonoBehaviour
     [Range(1, 100)]
     public int maxPregenCells = 2;
 
-    [Range(100, 10000)]
+    [Range(100, 500)]
     public int cellRows = 100;
 
-    [Range(100, 10000)]
+    [Range(100, 500)]
     public int cellColumns = 100;
 
     public bool showAllGenerations= true;
