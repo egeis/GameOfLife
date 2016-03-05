@@ -66,9 +66,9 @@ public class GameInit : MonoBehaviour
 
     IEnumerator GenerateWorld()
     {
-        for (int i = 0; i < _gs.cellRows; i++)
+        for (int i = 0; i < _gs.cellColumns; i++)
         {
-            for (int j = 0; j < _gs.cellColumns; j++)
+            for (int j = 0; j < _gs.cellRows; j++)
             {
                 Vector3 position = new Vector3(i, j, 0);
                 GameObject cell = Instantiate(_gs.prefab, Vector3.zero, Quaternion.identity) as GameObject;

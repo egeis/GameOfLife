@@ -16,8 +16,8 @@ public class Movement : MonoBehaviour {
 
     private GlobalSettings _gs;
 
-    private float _minZ = 10f;
-    private float _maxZ;
+    private float _minZ = 1f;
+    private float _maxZ = 1f;
 
     private GameObject _board;
 
@@ -37,12 +37,15 @@ public class Movement : MonoBehaviour {
     void Start ()
     {
         _gs = GlobalSettings.Instance;
-        _maxZ = (_gs.cellRows / 2.0f > _minZ) ? _gs.cellRows / 2.0f : _minZ;
+        _maxZ = (Screen.height *1f / Screen.width * 1f ) * (_gs.cellColumns / 2f); //Size = (Units in width / 2) * (height / width)
+        Debug.logger.Log(_maxZ);
+
+        _maxZ = (_maxZ > _minZ) ? _maxZ : _minZ;
 
         _board = GameObject.Find("GameBoard");
         
-        sizeX = _gs.cellRows;
-        sizeY = _gs.cellColumns;
+        sizeX = _gs.cellColumns;
+        sizeY = _gs.cellRows;
 
         CalculateMinMax();
 
@@ -59,7 +62,7 @@ public class Movement : MonoBehaviour {
     void Update()
     {
         float zoom = Input.GetAxis("Mouse ScrollWheel");
-        float size = Camera.main.orthographicSize + (zoom * 10f);
+        float size = Camera.main.orthographicSize + (zoom * 1.5f);
 
         if (size != 0.0f)
         {
