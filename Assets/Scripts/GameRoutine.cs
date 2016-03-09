@@ -11,4 +11,35 @@ public class GameRoutine : MonoBehaviour
     {
         _gs = GlobalSettings.Instance;
     }
+
+    void update()
+    {
+
+    }
+
+    void load()
+    {
+
+    }
+
+    IEnumerator generate()
+    {
+        //PreGeneration
+
+        for (int i = 0; i < _gs.cellColumns; i++)
+        {
+            for (int j = 0; j < _gs.cellRows; j++)
+            {
+
+                yield return null;
+            }
+        }
+
+        //PostGeneration
+    }
+
+    void save()
+    {
+
+    }
 }

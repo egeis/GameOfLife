@@ -13,7 +13,6 @@ public class GameInit : MonoBehaviour
     public GameObject loadingText;
 
     private LanguageManager languageManager;
-    private RulesManager rulesManager;
 
     public Dictionary<string, IRuleset> Rulesets = new Dictionary<string, IRuleset>();
 
@@ -35,10 +34,10 @@ public class GameInit : MonoBehaviour
     {
         _gs = GlobalSettings.Instance;
         _gs.loadingInterface.SetActive(true);
+        _gs.gameboard = GameObject.Find(_gs.gameBoardName);
         _state = Status.LOADING;
 
         languageManager = LanguageManager.Instance;
-        rulesManager = RulesManager.Instance;
 
         loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
         registerDefault();
@@ -57,13 +56,7 @@ public class GameInit : MonoBehaviour
 
     }
 
-    void registerDefault()
-    {
-        IRuleset rules = new Classic();
-        rulesManager.register(rules.UnlocalizedName, rules);
-    }
-
-
+    //TEMP
     IEnumerator GenerateWorld()
     {
         for (int i = 0; i < _gs.cellColumns; i++)
@@ -73,7 +66,7 @@ public class GameInit : MonoBehaviour
                 Vector3 position = new Vector3(i, j, 0);
                 GameObject cell = Instantiate(_gs.prefab, Vector3.zero, Quaternion.identity) as GameObject;
                 cell.transform.position = position;
-                cell.transform.parent = GameObject.Find("GameBoard").transform;
+                cell.transform.parent = _gs.gameboard.transform;
 
                 if (UnityEngine.Random.value < 0.2f)
                 {

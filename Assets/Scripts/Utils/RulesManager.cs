@@ -7,6 +7,7 @@ public class RulesManager {
     private Dictionary<string, IRuleset> Rulesets = new Dictionary<string, IRuleset>();
 
     private static RulesManager _instance = new RulesManager();
+
     public static RulesManager Instance
     {
         get { return _instance; }
@@ -33,15 +34,5 @@ public class RulesManager {
     public int Count()
     {
         return Rulesets.Count;
-    }
-
-    void Awake()
-    {
-        _instance = this;
-    }
-
-    void OnDestroy()
-    {
-        _instance = null;
     }
 }

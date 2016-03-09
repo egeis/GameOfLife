@@ -2,10 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Classic : IRuleset
+public class Classic : MonoBehaviour, IRuleset
 {
     private string unlocalizedName = "UI.Rules.Classic.Name";
     public string UnlocalizedName { get { return unlocalizedName; } }
+
+    private static Classic _instance;
+
+    private static Classic Instance
+    {
+        get { return _instance; }
+    }
+
+    void Awake()
+    {
+        RulesManager.Instance.register(unlocalizedName, this);
+        _instance = this;
+    }
 
     private Dictionary<int, Func<int[], int, int>> Rules = new Dictionary<int, Func<int[], int, int>>
     {
