@@ -8,6 +8,11 @@ public class Movement : MonoBehaviour {
     private float maxX;
     private float maxY;
 
+    private bool zooming = false;
+    public float zoomSpeed = 1.0f;
+    public float zoomSmoothSpeed = 2.0f;
+    private float orthoSize;
+
     private float sizeX;
     private float sizeY;
 
@@ -21,12 +26,12 @@ public class Movement : MonoBehaviour {
 
     private GameObject _board;
 
-    protected void CalculateMinMax()
+    protected void CalculateMinMaxBounds()
     {
         vertExtent = Camera.main.orthographicSize;
         horzExtent = vertExtent * Screen.width / Screen.height;
 
-        // Calculations assume map is position at the origin
+        // Calculations assume map is position at the origin, the origin is also the the bottom left corner of the gameboard.
         minX = 0 + horzExtent - 0.5f;
         maxX = sizeX - horzExtent - 0.5f;
         minY = 0 + vertExtent - 2.5f;
@@ -37,20 +42,18 @@ public class Movement : MonoBehaviour {
     void Start ()
     {
         _gs = GlobalSettings.Instance;
-        _maxZ = (Screen.height *1f / Screen.width * 1f ) * (_gs.cellColumns / 2f); //Size = (Units in width / 2) * (height / width)
-        Debug.logger.Log(_maxZ);
+        _board = GameObject.Find("GameBoard");
 
+        _maxZ = (Screen.height *1f / Screen.width * 1f ) * (_gs.cellColumns / 2f); //Size = (Units in width / 2) * (height / width)
         _maxZ = (_maxZ > _minZ) ? _maxZ : _minZ;
 
-        _board = GameObject.Find("GameBoard");
-        
         sizeX = _gs.cellColumns;
         sizeY = _gs.cellRows;
+        orthoSize = Camera.main.orthographicSize;
 
-        CalculateMinMax();
+        CalculateMinMaxBounds();
 
-        Debug.logger.Log(minX + " " + maxX + " | " + minY + " " + maxY);
-
+        //Center the Camera to the Board
         Vector3 pos = new Vector3(
             Mathf.Clamp(maxX / 2.0f, minX, maxX), 
             Mathf.Clamp(maxY / 2.0f, minY, maxY), 
@@ -61,14 +64,16 @@ public class Movement : MonoBehaviour {
 
     void Update()
     {
-        float zoom = Input.GetAxis("Mouse ScrollWheel");
-        float size = Camera.main.orthographicSize + (zoom * 1.5f);
-
-        if (size != 0.0f)
+        float scrollWheel = Input.GetAxis("Mouse ScrollWheel"); 
+         
+        if(scrollWheel != 0.0f)
         {
-            Camera.main.orthographicSize = Mathf.Clamp(size, _minZ, _maxZ);
-            CalculateMinMax();
+            orthoSize -= scrollWheel * zoomSpeed;
+            orthoSize = Mathf.Clamp(orthoSize, _minZ, _maxZ);
         }
+
+        Camera.main.orthographicSize = Mathf.MoveTowards(Camera.main.orthographicSize, orthoSize, Time.deltaTime * zoomSmoothSpeed);
+        CalculateMinMaxBounds();
     }
 
     void LateUpdate()
