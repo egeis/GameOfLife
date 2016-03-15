@@ -13,10 +13,8 @@ public class GameInit : MonoBehaviour
     public GameObject loadingText;
 
     private LanguageManager languageManager;
-
-    public Dictionary<string, IRuleset> Rulesets = new Dictionary<string, IRuleset>();
-
-    private System.Diagnostics.Stopwatch _sw = new System.Diagnostics.Stopwatch();
+    private RulesManager rulesManager;
+    private IRuleset _ruleset;
 
     private enum Status
     {
@@ -29,25 +27,25 @@ public class GameInit : MonoBehaviour
 
     private Status _state;
 
-	// Use this for initialization
-	void Start ()
+    void awake()
     {
         _gs = GlobalSettings.Instance;
         _gs.loadingInterface.SetActive(true);
         _gs.gameboard = GameObject.Find(_gs.gameBoardName);
         _state = Status.LOADING;
 
+        loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");  
+    }
+
+	void Start ()
+    {
         languageManager = LanguageManager.Instance;
+        rulesManager = RulesManager.Instance;
 
-        loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
-        registerDefault();
+        //_state = Status.GENERATING;
+        //statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Generate.New");
 
-        _state = Status.GENERATING;
-
-        statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.State");
-
-        _sw.Start();
-        StartCoroutine("GenerateWorld");
+        StartCoroutine("GenerateWorldCoroutines");
     }
 
     // Update is called once per frame
@@ -56,10 +54,9 @@ public class GameInit : MonoBehaviour
 
     }
 
-    //TEMP
-    IEnumerator GenerateWorld()
+    IEnumerator GenerateWorldCoroutines()
     {
-        for (int i = 0; i < _gs.cellColumns; i++)
+        /*for (int i = 0; i < _gs.cellColumns; i++)
         {
             for (int j = 0; j < _gs.cellRows; j++)
             {
@@ -82,10 +79,10 @@ public class GameInit : MonoBehaviour
 
             yield return null;
         }
-        _sw.Stop();
-        Debug.logger.Log(LogType.Log, "Generation Completed in " + _sw.ElapsedMilliseconds+"ms.");
         _state = Status.READY;
-        _gs.loadingInterface.SetActive(false);
+        _gs.loadingInterface.SetActive(false);*/
+
+        yield return null;
     }
 
   

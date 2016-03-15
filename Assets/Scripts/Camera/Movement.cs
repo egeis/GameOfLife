@@ -8,7 +8,6 @@ public class Movement : MonoBehaviour {
     private float maxX;
     private float maxY;
 
-    private bool zooming = false;
     public float zoomSpeed = 1.0f;
     public float zoomSmoothSpeed = 2.0f;
     private float orthoSize;
@@ -23,8 +22,6 @@ public class Movement : MonoBehaviour {
 
     private float _minZ = 1f;
     private float _maxZ = 1f;
-
-    private GameObject _board;
 
     protected void CalculateMinMaxBounds()
     {
@@ -42,7 +39,6 @@ public class Movement : MonoBehaviour {
     void Start ()
     {
         _gs = GlobalSettings.Instance;
-        _board = GameObject.Find("GameBoard");
 
         _maxZ = (Screen.height *1f / Screen.width * 1f ) * (_gs.cellColumns / 2f); //Size = (Units in width / 2) * (height / width)
         _maxZ = (_maxZ > _minZ) ? _maxZ : _minZ;

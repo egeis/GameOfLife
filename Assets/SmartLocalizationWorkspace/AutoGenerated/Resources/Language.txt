@@ -119,20 +119,17 @@
 	<data name="UI.Loading.Loading" xml:space="preserve">
 		<value>Loading...</value>
 	</data>
-	<data name="UI.Loading.New.Pregen" xml:space="preserve">
-		<value>Pregenerate Cells</value>
+	<data name="UI.Loading.Generate.New" xml:space="preserve">
+		<value>Generating New World</value>
 	</data>
-	<data name="UI.Loading.New.State" xml:space="preserve">
-		<value>Initializing World</value>
-	</data>
-	<data name="UI.Loading.Prev.Pregen" xml:space="preserve">
-		<value>Processing initial predefined generations</value>
-	</data>
-	<data name="UI.Loading.Prev.State" xml:space="preserve">
+	<data name="UI.Loading.Generate.Saved" xml:space="preserve">
 		<value>Initializing World from saved state</value>
 	</data>
-	<data name="UI.Loading.Scene" xml:space="preserve">
-		<value>Loading Scene</value>
+	<data name="UI.Loading.Ready" xml:space="preserve">
+		<value>Loading Completed.</value>
+	</data>
+	<data name="UI.Loading.Level" xml:space="preserve">
+		<value>Loading the next Scene.</value>
 	</data>
 	<data name="UI.Loading.Waiting" xml:space="preserve">
 		<value>Waiting to continue message.</value>
@@ -154,8 +151,5 @@
 	</data>
 	<data name="UI.Paused" xml:space="preserve">
 		<value>Paused Button Text</value>
-	</data>
-	<data name="UI.Loading.Ready" xml:space="preserve">
-		<value>Ready to load.</value>
 	</data>
 </root>

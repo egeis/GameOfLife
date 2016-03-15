@@ -116,26 +116,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="UI.Loading.Generate.New" xml:space="preserve">
+		<value>Generating a New World.</value>
+	</data>
+	<data name="UI.Loading.Generate.Saved" xml:space="preserve">
+		<value>Loading Saved World.</value>
+	</data>
+	<data name="UI.Loading.Level" xml:space="preserve">
+		<value>Loading Level.</value>
+	</data>
 	<data name="UI.Loading.Loading" xml:space="preserve">
-		<value>Loading...</value>
-	</data>
-	<data name="UI.Loading.New.Pregen" xml:space="preserve">
-		<value>Processing First Generation.</value>
-	</data>
-	<data name="UI.Loading.New.State" xml:space="preserve">
-		<value>Initializing World.</value>
-	</data>
-	<data name="UI.Loading.Prev.Pregen" xml:space="preserve">
-		<value>Processing next Generation.</value>
-	</data>
-	<data name="UI.Loading.Prev.State" xml:space="preserve">
-		<value>Rebuilding the World.</value>
+		<value>Loading.</value>
 	</data>
 	<data name="UI.Loading.Ready" xml:space="preserve">
-		<value>Ready to Load...</value>
-	</data>
-	<data name="UI.Loading.Scene" xml:space="preserve">
-		<value>Initializing Scene.</value>
+		<value>Ready to Load.</value>
 	</data>
 	<data name="UI.Loading.Waiting" xml:space="preserve">
 		<value>Press the space key to continue.</value>

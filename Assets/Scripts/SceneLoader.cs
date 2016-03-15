@@ -15,7 +15,6 @@ public class SceneLoader : MonoBehaviour
     public GameObject statusText;
     public GameObject loadingText;
 
-    // Use this for initialization
     void Start()
     {
         languageManager = LanguageManager.Instance;
@@ -23,7 +22,6 @@ public class SceneLoader : MonoBehaviour
         statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Waiting");
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Space) && loadScene == false)
@@ -31,7 +29,7 @@ public class SceneLoader : MonoBehaviour
             loadScene = true;
 
             loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Scene");
+            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Level");
 
             StartCoroutine(LoadNewScene(scene));
         }
@@ -39,7 +37,7 @@ public class SceneLoader : MonoBehaviour
 
     IEnumerator LoadNewScene(int scene)
     {
-        yield return new WaitForSeconds(2); //For Demo & debug Purposes only, not needed in production versions.
+        yield return new WaitForSeconds(2); //For Demo & debug Purposes only.
 
         AsyncOperation async = SceneManager.LoadSceneAsync(scene);
 
