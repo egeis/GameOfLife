@@ -8,8 +8,9 @@ public class MenuUIScript : MonoBehaviour
 
     void Start ()
     {
-        this.gameObject.SetActive(false);
         exitConfirm.SetActive(false);
+        menuPanel.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -17,12 +18,14 @@ public class MenuUIScript : MonoBehaviour
     {
 	    if(Input.GetKeyDown(KeyCode.Escape))
         {
+            menuPanel.SetActive(false);
             this.gameObject.SetActive(false);
         }
 	}
 
     public void onMenuButtonPressed()
     {
+        menuPanel.SetActive(true);
         this.gameObject.SetActive(true);
     }
 

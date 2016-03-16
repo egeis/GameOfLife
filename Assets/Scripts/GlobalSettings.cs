@@ -12,14 +12,10 @@ public class GlobalSettings : MonoBehaviour
 
     private static GlobalSettings _instance;
     private int current_generation = 0;
-    private int processed_generation = 0;
 
     public GameObject prefab;
     public GameObject loadingInterface;
     public GameObject gameboard;
-
-    public bool loadingSavedState = false;
-    public string savedStateId = "";
 
     [Range(1, 10)]
     public int maxGenerationsPerSecond = 2;
@@ -27,24 +23,31 @@ public class GlobalSettings : MonoBehaviour
     [Range(1, 100)]
     public int maxPregenCells = 2;
 
-    [Range(100, 10000)]
+    [Range(100, 500)]
     public int cellRows = 100;
 
-    [Range(100, 10000)]
+    [Range(100, 500)]
     public int cellColumns = 100;
-
-    public bool showAllGenerations= true;
-    public bool animatedStateChanges = true;
 
     public Camera mainCamera;
 
+    [HideInInspector]
     public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
+
+    [HideInInspector]
+    public Dictionary<Vector4, int> FutureCellStates = new Dictionary<Vector4, int>();
 
     [HideInInspector]
     public int activeCells = 0;
 
     [HideInInspector]
     public int totalCells = 0;
+
+    [HideInInspector]
+    public readonly string gameBoardName = "GameBoard";
+
+    [HideInInspector]
+    public string SelectedRules = Classic.unlocalizedName;  //TEMP: Replace with selection from Main Menu later.
 
     public int getCurrentGeneration()
     {

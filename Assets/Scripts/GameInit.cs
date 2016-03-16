@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using SmartLocalization;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public class GameInit : MonoBehaviour
@@ -12,82 +13,110 @@ public class GameInit : MonoBehaviour
     public GameObject loadingText;
 
     private LanguageManager languageManager;
+    private RulesManager rulesManager;
+    private IRuleset _ruleset;
 
-    public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
+    private bool loadingCorotineStarted = false;
 
-	// Use this for initialization
-	void Start ()
+    //private Queue<Dictionary<Vector3, int>> FutureGenerations = new Queue<Dictionary<Vector3, int>>();
+
+    private enum Status
+    {
+        LOADING,
+        GENERATING,
+        RUNNING,        //Running
+        ERROR
+    }
+
+    private enum Errors
+    {
+        NONE,
+        RULESET_INVALID
+    }
+
+    private Status _state = Status.LOADING;
+    private Errors _error = Errors.NONE;
+
+    void awake()
     {
         _gs = GlobalSettings.Instance;
-        languageManager = LanguageManager.Instance;
-
-        _gs.loadingSavedState = false;      // TODO: remove after creating loading / saving methods.
-        loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
-
-
-        if (_gs.loadingSavedState)
-        {
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Prev.State");
-            generateWorld();
-            loadPreviousCellStates();
-
-            //Pregenerate World
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Prev.Pregen");
-        }
-        else
-        {
-            // GENERATING NEW WORLD
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.State");
-            generateWorld();
-
-            //Pregenerate World
-            statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.New.Pregen");
-        }
-
-        _gs.loadingInterface.SetActive(false);
+        _gs.loadingInterface.SetActive(true);
+        _gs.gameboard = GameObject.Find(_gs.gameBoardName);
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	    
-	}
 
-    void generateWorld()
+	void Start ()
     {
-        for (int i = 0; i < _gs.cellRows; i++)
+        languageManager = LanguageManager.Instance;
+        rulesManager = RulesManager.Instance;
+    }
+
+    IEnumerator CreateGame()
+    {
+        Debug.LogAssertion(rulesManager.Count());
+        bool success = rulesManager.getRules(_gs.SelectedRules, ref _ruleset);
+
+        if (!success)
         {
-            for (int j = 0; j < _gs.cellColumns; j++)
+            _state = Status.ERROR;
+            _error = Errors.RULESET_INVALID;
+
+            Debug.LogError("Ruleset Invalid");
+        }
+
+        _state = Status.GENERATING;
+        //Generation
+        for (int i = 0; i < _gs.cellColumns; i++)
+        {
+            for (int j = 0; j < _gs.cellRows; j++)
             {
                 Vector3 position = new Vector3(i - _gs.cellRows / 2.0f, j - _gs.cellColumns / 2.0f, 0);
                 GameObject cell = Instantiate(_gs.prefab, Vector3.zero, Quaternion.identity) as GameObject;
                 cell.transform.position = position;
-                cell.transform.parent = GameObject.Find("GameBoard").transform;
+                cell.transform.parent = _gs.gameboard.transform;
 
-                if (UnityEngine.Random.value < 0.2f)
-                {
-                    cell.GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f, 1f);
-                }
-                else
-                {
-                    cell.GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 0.2f, 1f);
-                }
+                //SET Cell 
+                int state = _ruleset.getRandomCell();
 
-                Cells.Add(position, cell);
+                //END SET Cell 
 
-                //TODO: Create a Initial Cell Object
+                cell.GetComponent<SpriteRenderer>().color = _ruleset.getColorValue(state);
             }
+
+            yield return null;
         }
     }
 
-    void loadPreviousCellStates()
+    // Update is called once per frame
+    void Update ()
     {
-        for (int i = 0; i > _gs.cellRows; i++)
+        if (!loadingCorotineStarted)
         {
-            for (int j = 0; j > _gs.cellColumns; j++)
-            {
+            loadingCorotineStarted = true;
+            StartCoroutine(CreateGame());
+        }
 
+        if (_state != Status.RUNNING)
+        {
+            switch (_state)
+            {
+                case Status.LOADING:
+                    loadingText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Loading");
+                    break;
+                case Status.GENERATING:
+                    statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Generate.New");
+                    break;
+                case Status.ERROR:
+                    statusText.GetComponent<Text>().text = languageManager.GetTextValue("UI.Loading.Generate.Error");
+
+                    //TODO: Set Error message specific to error generated.
+
+                    break;
             }
+
+        }
+        else
+        {
+            _gs.loadingInterface.active = false;
         }
     }
 }
