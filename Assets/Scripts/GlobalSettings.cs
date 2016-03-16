@@ -29,9 +29,6 @@ public class GlobalSettings : MonoBehaviour
     [Range(100, 500)]
     public int cellColumns = 100;
 
-    public bool showAllGenerations= true;
-    public bool animatedStateChanges = true;
-
     public Camera mainCamera;
 
     [HideInInspector]
@@ -48,6 +45,9 @@ public class GlobalSettings : MonoBehaviour
 
     [HideInInspector]
     public readonly string gameBoardName = "GameBoard";
+
+    [HideInInspector]
+    public string SelectedRules = Classic.unlocalizedName;  //TEMP: Replace with selection from Main Menu later.
 
     public int getCurrentGeneration()
     {

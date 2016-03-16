@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Classic : MonoBehaviour, IRuleset
 {
-    private string unlocalizedName = "UI.Rules.Classic.Name";
+    public readonly static string unlocalizedName = "UI.Rules.Classic"; //TEMP: Used as a default, must remain public and static.
     public string UnlocalizedName { get { return unlocalizedName; } }
 
     private static Classic _instance;
@@ -16,7 +16,29 @@ public class Classic : MonoBehaviour, IRuleset
 
     void Awake()
     {
-        RulesManager.Instance.register(unlocalizedName, this);
+        Debug.LogAssertion(RulesManager.Instance.register(unlocalizedName, Instance));
+
+        WeightedStates lws = null;
+
+        int index = 0;
+        cumValues = new float[Enum.GetNames(typeof(States)).Length];
+
+        foreach (States val in Enum.GetValues(typeof(States)))
+        {
+            WeightedStates ws = new WeightedStates();
+            ws.Id = (int) val;
+            ws.Weight = getFloatValue((int)val);
+
+            if (lws == null)
+                ws.Cumulative = ws.Weight;
+            else
+                ws.Cumulative = ws.Weight + lws.Cumulative;
+
+            weights.Add(ws);
+            lws = ws;
+            cumValues[index++] = ws.Cumulative;
+        }
+
         _instance = this;
     }
 
@@ -25,7 +47,13 @@ public class Classic : MonoBehaviour, IRuleset
         {0, CheckRuleBirth},
         {1, CheckRuleDeath}
     };
+
     public Dictionary<int, Func<int[], int, int>> getRuleset() { return Rules; }
+
+    private List<WeightedStates> weights = new List<WeightedStates>();
+    private float[] cumValues;
+
+    public Dictionary<int, Color> StateColors = new Dictionary<int, Color>();
 
     public enum States
     {
@@ -38,6 +66,18 @@ public class Classic : MonoBehaviour, IRuleset
         Dead
     }
 
+    public int getRandomCell()
+    {
+        float value = UnityEngine.Random.Range(0.0f, cumValues[cumValues.Length-1]);
+        int index = Array.BinarySearch(cumValues, value);
+
+        if (index >= 0)
+            index = ~index;
+
+        return weights[index].Id;
+    }
+
+    //Rule 1
     public static int CheckRuleBirth(int[] count, int current_state)
     {
         int next_state = current_state;
@@ -51,6 +91,7 @@ public class Classic : MonoBehaviour, IRuleset
         return next_state;
     }
 
+    //Rule 2 & 3
     public static int CheckRuleDeath(int[] count, int current_state)
     {
         int next_state = current_state;
@@ -64,13 +105,43 @@ public class Classic : MonoBehaviour, IRuleset
         return next_state;
     }
 
+    public float getFloatValue(int value)
+    {
+        return FloatEnum.getFloatValue((States) value);
+    }
+
+    [Obsolete("use getFloatValue(int value)", false)]
+    public float getFloatValue(Enum value)
+    {
+        return FloatEnum.getFloatValue(value);
+    }
+
+    [Obsolete("use getStringValue(int value)", false)]
     public string getStringValue(Enum value)
     {
         return StringEnum.getStringValue(value);
     }
 
+    public string getStringValue(int value)
+    {
+        return StringEnum.getStringValue((States)value);
+    }
+
+    public Color getColorValue(int value)
+    {
+       return ColorEnum.getColorValue((States)value);
+    }
+
+    [Obsolete("use getColorValue(int value)", false)]
     public Color getColorValue(Enum value)
     {
         return ColorEnum.getColorValue(value);
     }
+}
+
+class WeightedStates
+{
+    public int Id { get; set; }
+    public float Weight { get; set; }
+    public float Cumulative { get; set; }
 }
