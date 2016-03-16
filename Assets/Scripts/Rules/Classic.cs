@@ -5,19 +5,11 @@ using UnityEngine;
 public class Classic : MonoBehaviour, IRuleset
 {
     public readonly static string unlocalizedName = "UI.Rules.Classic"; //TEMP: Used as a default, must remain public and static.
+
     public string UnlocalizedName { get { return unlocalizedName; } }
 
-    private static Classic _instance;
-
-    private static Classic Instance
+    public Classic()
     {
-        get { return _instance; }
-    }
-
-    void Awake()
-    {
-        Debug.LogAssertion(RulesManager.Instance.register(unlocalizedName, Instance));
-
         WeightedStates lws = null;
 
         int index = 0;
@@ -38,8 +30,6 @@ public class Classic : MonoBehaviour, IRuleset
             lws = ws;
             cumValues[index++] = ws.Cumulative;
         }
-
-        _instance = this;
     }
 
     private Dictionary<int, Func<int[], int, int>> Rules = new Dictionary<int, Func<int[], int, int>>
