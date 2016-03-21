@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Classic : MonoBehaviour, IRuleset
+public class Classic : IRuleset
 {
-    public readonly static string unlocalizedName = "UI.Rules.Classic"; //TEMP: Used as a default, must remain public and static.
-
-    public string UnlocalizedName { get { return unlocalizedName; } }
+    public string UnlocalizedName { get { return "UI.Rules.Classic"; } }
 
     public Classic()
     {
@@ -30,6 +28,10 @@ public class Classic : MonoBehaviour, IRuleset
             lws = ws;
             cumValues[index++] = ws.Cumulative;
         }
+
+#if (UNITY_EDITOR)
+       Debug.LogAssertion("Number of Cumulative Values for [CLASSIC]:" + cumValues.Length);
+#endif
     }
 
     private Dictionary<int, Func<int[], int, int>> Rules = new Dictionary<int, Func<int[], int, int>>
@@ -58,11 +60,17 @@ public class Classic : MonoBehaviour, IRuleset
 
     public int getRandomCell()
     {
-        float value = UnityEngine.Random.Range(0.0f, cumValues[cumValues.Length-1]);
+        float value = UnityEngine.Random.value * cumValues[cumValues.Length-1];
+        //value = Mathf.RoundToInt(value);
+
         int index = Array.BinarySearch(cumValues, value);
 
-        if (index >= 0)
-            index = ~index;
+        if (index <= 0)
+            index = ~index;           
+
+#if (UNITY_EDITOR)
+        //Debug.LogAssertion("Selected index ["+index+"] from value:"+value);
+#endif
 
         return weights[index].Id;
     }
