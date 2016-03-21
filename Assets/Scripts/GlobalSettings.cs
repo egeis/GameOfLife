@@ -13,6 +13,8 @@ public class GlobalSettings : MonoBehaviour
     private static GlobalSettings _instance;
     private int current_generation = 0;
 
+    public IRuleset Rules;
+
     public GameObject prefab;
     public GameObject loadingInterface;
     public GameObject gameboard;
@@ -32,10 +34,10 @@ public class GlobalSettings : MonoBehaviour
     public Camera mainCamera;
 
     [HideInInspector]
-    public Dictionary<Vector3, GameObject> Cells = new Dictionary<Vector3, GameObject>();
+    public Dictionary<Vector3, GameObject> Cells;
 
     [HideInInspector]
-    public Dictionary<Vector4, int> FutureCellStates = new Dictionary<Vector4, int>();
+    public Dictionary<Vector4, int> FutureCellStates;
 
     [HideInInspector]
     public int activeCells = 0;
@@ -47,7 +49,7 @@ public class GlobalSettings : MonoBehaviour
     public readonly string gameBoardName = "GameBoard";
 
     [HideInInspector]
-    public string SelectedRules = Classic.unlocalizedName;  //TEMP: Replace with selection from Main Menu later.
+    public string SelectedRules = "";
 
     public int getCurrentGeneration()
     {
@@ -62,6 +64,18 @@ public class GlobalSettings : MonoBehaviour
     void Awake()
     {
         _instance = this;
+    }
+
+    void Start()
+    {
+        Rules = new Classic();
+        FutureCellStates = new Dictionary<Vector4, int>();
+        Cells = new Dictionary<Vector3, GameObject>();
+}
+
+    void Update()
+    {
+
     }
 
     void OnDestroy()

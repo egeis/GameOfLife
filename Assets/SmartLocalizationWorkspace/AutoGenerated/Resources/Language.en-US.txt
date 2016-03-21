@@ -116,6 +116,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="UI.Loading.Error.INVALID_RULESET" xml:space="preserve">
+		<value>INVALID_RULESET</value>
+	</data>
+	<data name="UI.Loading.Error.RULESET_NOT_SET" xml:space="preserve">
+		<value />
+	</data>
 	<data name="UI.Loading.Generate.Error" xml:space="preserve">
 		<value>An error occured during generation.</value>
 	</data>
@@ -154,5 +160,8 @@
 	</data>
 	<data name="UI.Paused" xml:space="preserve">
 		<value>Paused</value>
+	</data>
+	<data name="UI.Loading.Error.UNKNOWN_ERROR" xml:space="preserve">
+		<value />
 	</data>
 </root>

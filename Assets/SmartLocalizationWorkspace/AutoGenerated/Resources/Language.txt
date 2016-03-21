@@ -116,6 +116,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="UI.Loading.Error.INVALID_RULESET" xml:space="preserve">
+		<value>INVALID_RULESET</value>
+	</data>
+	<data name="UI.Loading.Error.RULESET_NOT_SET" xml:space="preserve">
+		<value>RULESET_NOT_SET</value>
+	</data>
+	<data name="UI.Loading.Generate.Error" xml:space="preserve">
+		<value>Generation Error Message.</value>
+	</data>
 	<data name="UI.Loading.Generate.New" xml:space="preserve">
 		<value>Generating New World</value>
 	</data>
@@ -152,7 +161,7 @@
 	<data name="UI.Paused" xml:space="preserve">
 		<value>Game Paused message.  IE "Paused" appears on screen.</value>
 	</data>
-	<data name="UI.Loading.Generate.Error" xml:space="preserve">
-		<value>Generation Error Message.</value>
+	<data name="UI.Loading.Error.UNKNOWN_ERROR" xml:space="preserve">
+		<value>UNKNOWN_ERROR</value>
 	</data>
 </root>
