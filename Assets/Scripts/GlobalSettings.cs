@@ -19,8 +19,8 @@ public class GlobalSettings : MonoBehaviour
     public GameObject loadingInterface;
     public GameObject gameboard;
 
-    [Range(1, 10)]
-    public int maxGenerationsPerSecond = 2;
+    [Range(1, 60)]
+    public int minSecondsBetweenGenerations = 2;
 
     [Range(1, 100)]
     public int maxPregenCells = 2;
