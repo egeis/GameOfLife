@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityToolbag;
+
 public class GameInit : MonoBehaviour
 {
     private GlobalSettings _gs;
@@ -19,13 +21,18 @@ public class GameInit : MonoBehaviour
     private Coroutine loader = null;
     private bool loaderStarted = false;
 
-    //private Queue<Dictionary<Vector3, int>> FutureGenerations = new Queue<Dictionary<Vector3, int>>();
+    private Queue<Dictionary<Vector3, int>> FutureGenerations = new Queue<Dictionary<Vector3, int>>();
+    private Dictionary<Vector3, int> lastProcessed = new Dictionary<Vector3, int>();
+    private Dictionary<Vector3, int> nextGeneration = new Dictionary<Vector3, int>();
+
+    private bool renderingCells = false;
 
     private enum Status
     {
         LOADING,
         GENERATING,
         RUNNING,        //Running
+        PAUSED,
         ERROR
     }
 
@@ -45,10 +52,67 @@ public class GameInit : MonoBehaviour
         _gs.loadingInterface.SetActive(true);
         _gs.gameboard = GameObject.Find(_gs.gameBoardName);
 
-        languageManager = LanguageManager.Instance;
+        languageManager = LanguageManager.Instance;        
     }
 
-    IEnumerator CreateGame()
+    private IEnumerator RenderNextGeneration()
+    {
+        while(true)
+        {
+            if (_state == Status.ERROR) break;
+
+            yield return new WaitForSeconds(_gs.minSecondsBetweenGenerations);
+            
+            while (_state == Status.RUNNING)
+            {
+                if (!renderingCells && FutureGenerations.Count > 0)
+                {
+                    nextGeneration = FutureGenerations.Dequeue();
+                    renderingCells = true;
+                    break;
+                }
+                else
+                    yield return null;
+            }
+        }
+    }
+
+    private IEnumerator RenderCells()
+    {
+        renderingCells = true;
+
+#if (UNITY_EDITOR)
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+#endif
+
+        for (int i = 0; i < _gs.cellColumns; i++)
+        {
+            for (int j = 0; j < _gs.cellRows; j++)
+            {
+                Vector3 position = new Vector3(i, j, 0);
+
+
+            }
+
+            //yield return null;
+        }
+
+#if (UNITY_EDITOR)
+        sw.Stop();
+        Debug.LogAssertion("Update() Took:" + sw.Elapsed);
+#endif
+
+        renderingCells = false;
+        yield return null;
+    }
+
+    private IEnumerator GenerateFutures()
+    {
+        yield return null;
+    }
+
+    private IEnumerator CreateGame()
     {
         if (_gs.Rules == null)
         {
@@ -60,6 +124,17 @@ public class GameInit : MonoBehaviour
         }
     
         _state = Status.GENERATING;
+
+        Dictionary<Vector3, int> currentStates = new Dictionary<Vector3, int>();
+
+#if (UNITY_EDITOR)
+        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+        sw.Start();
+#endif
+
+        System.Diagnostics.Stopwatch swg = new System.Diagnostics.Stopwatch();
+        swg.Start();
+        
         //Generation
         for (int i = 0; i < _gs.cellColumns; i++)
         {
@@ -72,16 +147,33 @@ public class GameInit : MonoBehaviour
 
                 //SET Cell 
                 int state = _gs.Rules.getRandomCell();
-
+                cell.name = "cell_" + position.x + "_" + position.y + "_" + position.z;
+                currentStates.Add(position, state);
                 //END SET Cell 
 
                 cell.GetComponent<SpriteRenderer>().color = _gs.Rules.getColorValue(state);
             }
 
-            yield return null;
+            swg.Stop();
+            if (swg.ElapsedMilliseconds > 100)
+            {
+                yield return null;
+                swg.Reset();
+            }
+            swg.Start();
         }
 
+#if (UNITY_EDITOR)
+        sw.Stop();
+        Debug.LogAssertion("Generation Took:"+sw.Elapsed);
+#endif
+
         _state = Status.RUNNING;
+        _gs.loadingInterface.SetActive(false);
+        yield return null;
+
+        //Create Futures Coroutine;
+        //StartCoroutine(RenderNextGeneration());
     }
 
     // Update is called once per frame
@@ -125,7 +217,7 @@ public class GameInit : MonoBehaviour
         }
         else
         {
-            _gs.loadingInterface.SetActive(false);
+            //Game Loop
         }
     }
 }
