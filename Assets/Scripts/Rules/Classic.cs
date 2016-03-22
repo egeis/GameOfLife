@@ -6,6 +6,8 @@ public class Classic : IRuleset
 {
     public string UnlocalizedName { get { return "UI.Rules.Classic"; } }
 
+    private float cumValueLast;
+
     public Classic()
     {
         WeightedStates lws = null;
@@ -28,6 +30,8 @@ public class Classic : IRuleset
             lws = ws;
             cumValues[index++] = ws.Cumulative;
         }
+
+        cumValueLast = cumValues[cumValues.Length - 1];
 
 #if (UNITY_EDITOR)
        Debug.LogAssertion("Number of Cumulative Values for [CLASSIC]:" + cumValues.Length);
@@ -60,17 +64,12 @@ public class Classic : IRuleset
 
     public int getRandomCell()
     {
-        float value = UnityEngine.Random.value * cumValues[cumValues.Length-1];
-        //value = Mathf.RoundToInt(value);
+        float value = UnityEngine.Random.value * cumValueLast;
 
         int index = Array.BinarySearch(cumValues, value);
 
         if (index <= 0)
             index = ~index;           
-
-#if (UNITY_EDITOR)
-        //Debug.LogAssertion("Selected index ["+index+"] from value:"+value);
-#endif
 
         return weights[index].Id;
     }
