@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityToolbag;
 
 public class Classic : IRuleset
 {
@@ -62,6 +63,79 @@ public class Classic : IRuleset
         Dead
     }
 
+    public static float mod(float a, float b)
+    {
+        return (a % b + b) % b;
+    }
+
+    public Future<Dictionary<Vector2, int>> ComputeNextState(Dictionary<Vector2, int> lastState, Vector2 bounds)
+    {
+        Future<Dictionary<Vector2, int>> future = new Future<Dictionary<Vector2, int>>();
+
+        future.Process(() =>
+        {
+            Dictionary<Vector2, int> states = new Dictionary<Vector2, int>();
+
+            foreach (Vector2 key in lastState.Keys)
+            {
+                int value = 0;
+                lastState.TryGetValue(key, out value);
+                int[] count = new int[Enum.GetNames(typeof(States)).Length];
+
+                float[] xs = new float[]
+                {
+                    mod(key.x + 1, bounds.x),
+                    mod(key.x + 1, bounds.x),
+                    key.x,
+                    key.x,
+                    mod(key.x + 1, bounds.x),
+                    mod(key.x - 1, bounds.x),
+                    mod(key.x - 1, bounds.x),
+                    mod(key.x - 1, bounds.x)
+                };
+
+                float[] ys = new float[]
+                {
+                    key.y,
+                    mod(key.y + 1, bounds.y),
+                    mod(key.y + 1, bounds.y),
+                    mod(key.y - 1, bounds.y),
+                    mod(key.y - 1, bounds.y),
+                    key.y,
+                    mod(key.y + 1, bounds.y),
+                    mod(key.y - 1, bounds.y)
+                };
+
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector2 v = new Vector2(xs[i], ys[i]);
+                    int a = (int) States.Dead;
+
+                    bool success = lastState.TryGetValue(v, out a);
+
+                    if(success)
+                        count[a] += 1;
+                }
+
+                if(value == (int) States.Alive)
+                    value = CheckRuleDeath(count, value);
+                else
+                    value = CheckRuleBirth(count, value);
+
+                //Debug.LogAssertion(key + ":" + value 
+                //    + "\ncount[alive]:"+count[(int) States.Alive] + " \tcount[Dead]:" + count[(int) States.Dead]);
+
+                states.Add(key, value);
+            }
+
+            //Debug.LogAssertion("Ending Future:");
+
+            return states;
+        });
+
+        return future;
+    }
+
     public int getRandomCell()
     {
         float value = UnityEngine.Random.value * cumValueLast;
@@ -95,7 +169,7 @@ public class Classic : IRuleset
 
         if(current_state == (int)States.Alive)
         {
-            if (count[(int)States.Alive] < 2 || count[(int)States.Alive] > 3)
+            if (count[(int) States.Alive] < 2 || count[(int) States.Alive] > 3)
                 next_state = (int)States.Dead;
         }
 

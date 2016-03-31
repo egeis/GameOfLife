@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityToolbag;
 
 public interface IRuleset
 {
@@ -17,4 +18,6 @@ public interface IRuleset
 
     String UnlocalizedName { get; }
     int getRandomCell();
+
+    Future<Dictionary<Vector2, int>> ComputeNextState(Dictionary<Vector2, int> lastState, Vector2 bounds);
 }

@@ -16,16 +16,14 @@ public class GameInit : MonoBehaviour
 
     private LanguageManager languageManager;
 
-    private bool loadingCorotineStarted = false;
-
     private Coroutine loader = null;
     private bool loaderStarted = false;
 
-    private Queue<Dictionary<Vector3, int>> FutureGenerations = new Queue<Dictionary<Vector3, int>>();
-    private Dictionary<Vector3, int> lastProcessed = new Dictionary<Vector3, int>();
-    private Dictionary<Vector3, int> nextGeneration = new Dictionary<Vector3, int>();
+    private Dictionary<Vector2, int> nextState = new Dictionary<Vector2, int>();
 
-    private bool renderingCells = false;
+    private Vector2 bounds;
+
+    private bool scheduleNextState = true;
 
     private enum Status
     {
@@ -52,6 +50,8 @@ public class GameInit : MonoBehaviour
         _gs.loadingInterface.SetActive(true);
         _gs.gameboard = GameObject.Find(_gs.gameBoardName);
 
+        bounds = new Vector2(_gs.cellColumns, _gs.cellRows);
+
         languageManager = LanguageManager.Instance;        
     }
 
@@ -65,10 +65,18 @@ public class GameInit : MonoBehaviour
             
             while (_state == Status.RUNNING)
             {
-                if (!renderingCells && FutureGenerations.Count > 0)
+                if (_gs.FutureGenerations.Count > 0)
                 {
-                    nextGeneration = FutureGenerations.Dequeue();
-                    renderingCells = true;
+                    //_gs.incrementCurrentGeneration();
+                    _gs.currentStates = _gs.FutureGenerations.Dequeue();
+                    for (int i = 0; i < _gs.cellColumns; i++)
+                    {
+                        for (int j = 0; j < _gs.cellRows; j++)
+                        {
+                            Vector2 position = new Vector2((float)i, (float)j);
+                            GameObject.Find("cell_" + position.x + "_" + position.y).GetComponent<CellBehaviour>;
+                        }
+                    }
                     break;
                 }
                 else
@@ -77,40 +85,32 @@ public class GameInit : MonoBehaviour
         }
     }
 
-    private IEnumerator RenderCells()
+    //Too Slow at Updating Cells
+    /*private IEnumerator RenderCells()
     {
-        renderingCells = true;
-
-#if (UNITY_EDITOR)
-        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-        sw.Start();
-#endif
+        currentStates = _gs.FutureGenerations.Dequeue();
 
         for (int i = 0; i < _gs.cellColumns; i++)
         {
             for (int j = 0; j < _gs.cellRows; j++)
             {
-                Vector3 position = new Vector3(i, j, 0);
+                Vector2 position = new Vector2((float)i, (float)j);
 
+                int state = 0;
+                currentStates.TryGetValue(position, out state);
 
+                GameObject cell = GameObject.Find("cell_" + position.x + "_" + position.y);
+
+                cell.GetComponent<SpriteRenderer>().color = _gs.Rules.getColorValue(state);
             }
 
-            //yield return null;
+            yield return null;
         }
 
-#if (UNITY_EDITOR)
-        sw.Stop();
-        Debug.LogAssertion("Update() Took:" + sw.Elapsed);
-#endif
 
         renderingCells = false;
         yield return null;
-    }
-
-    private IEnumerator GenerateFutures()
-    {
-        yield return null;
-    }
+    }*/
 
     private IEnumerator CreateGame()
     {
@@ -124,8 +124,7 @@ public class GameInit : MonoBehaviour
         }
     
         _state = Status.GENERATING;
-
-        Dictionary<Vector3, int> currentStates = new Dictionary<Vector3, int>();
+        _gs.currentStates = new Dictionary<Vector2, int>();
 
 #if (UNITY_EDITOR)
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
@@ -140,15 +139,15 @@ public class GameInit : MonoBehaviour
         {
             for (int j = 0; j < _gs.cellRows; j++)
             {
-                Vector3 position = new Vector3(i, j, 0);
-                GameObject cell = Instantiate(_gs.prefab, Vector3.zero, Quaternion.identity) as GameObject;
+                Vector2 position = new Vector2(i, j);
+                GameObject cell = Instantiate(_gs.prefab, Vector2.zero, Quaternion.identity) as GameObject;
                 cell.transform.position = position;
                 cell.transform.parent = _gs.gameboard.transform;
 
                 //SET Cell 
                 int state = _gs.Rules.getRandomCell();
-                cell.name = "cell_" + position.x + "_" + position.y + "_" + position.z;
-                currentStates.Add(position, state);
+                cell.name = "cell_" + position.x + "_" + position.y;
+                _gs.currentStates.Add(position, state);
                 //END SET Cell 
 
                 cell.GetComponent<SpriteRenderer>().color = _gs.Rules.getColorValue(state);
@@ -170,10 +169,13 @@ public class GameInit : MonoBehaviour
 
         _state = Status.RUNNING;
         _gs.loadingInterface.SetActive(false);
+        _gs.incrementCurrentGeneration();
+        nextState = _gs.currentStates;
+
         yield return null;
 
         //Create Futures Coroutine;
-        //StartCoroutine(RenderNextGeneration());
+        StartCoroutine(RenderNextGeneration());
     }
 
     // Update is called once per frame
@@ -217,7 +219,20 @@ public class GameInit : MonoBehaviour
         }
         else
         {
-            //Game Loop
+            //Game Loop - Main Thread after loading.
+            if (scheduleNextState && _gs.FutureGenerations.Count < _gs.maxPregenCells)
+            {
+                Future<Dictionary<Vector2, int>> futureState = new Future<Dictionary<Vector2, int>>();
+                futureState = _gs.Rules.ComputeNextState(nextState, bounds);
+
+                futureState.OnSuccess((states) => {
+                    _gs.FutureGenerations.Enqueue(states.value);
+                    nextState = states.value;
+                    scheduleNextState = true;
+                });
+
+                scheduleNextState = false;
+            }
         }
     }
 }

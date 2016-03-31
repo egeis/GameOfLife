@@ -37,7 +37,7 @@ public class GlobalSettings : MonoBehaviour
     public Dictionary<Vector3, GameObject> Cells;
 
     [HideInInspector]
-    public Dictionary<Vector4, int> FutureCellStates;
+    public Dictionary<Vector2, int> currentStates = new Dictionary<Vector2, int>();
 
     [HideInInspector]
     public int activeCells = 0;
@@ -51,6 +51,12 @@ public class GlobalSettings : MonoBehaviour
     [HideInInspector]
     public string SelectedRules = "";
 
+    [HideInInspector]
+    public Queue<Dictionary<Vector2, int>> FutureGenerations = new Queue<Dictionary<Vector2, int>>();
+
+    private int maxCount;
+    private int count;
+
     public int getCurrentGeneration()
     {
         return Interlocked.CompareExchange(ref current_generation, 0, 0);
@@ -61,6 +67,21 @@ public class GlobalSettings : MonoBehaviour
         return Interlocked.Increment(ref current_generation);
     }
 
+    public int getRenderCount()
+    {
+        return count;
+    }
+
+    public void incrementRenderCount()
+    {
+        count++;
+    }
+
+    public void resetRenderCount()
+    {
+        count = 0;
+    }
+
     void Awake()
     {
         _instance = this;
@@ -69,9 +90,10 @@ public class GlobalSettings : MonoBehaviour
     void Start()
     {
         Rules = new Classic();
-        FutureCellStates = new Dictionary<Vector4, int>();
         Cells = new Dictionary<Vector3, GameObject>();
-}
+        count = 0;
+        maxCount = this.cellColumns * this.cellRows;
+    }
 
     void Update()
     {
