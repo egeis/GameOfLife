@@ -1,47 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CellBehaviour : MonoBehaviour
 {
     private GlobalSettings _gs;
-    private int state = 0;
-
-    public int nextState = 0;
-    public Color nextColor;
+    private Color _nextColor;
+    private int generation = 0;
 
 	// Use this for initialization
 	void Start ()
     {
         _gs = GlobalSettings.Instance;
-        state = 0;
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-	    //if(_gs.getCurrentGeneration() > generation)
-        //{
-            //generation++;
-            _gs.currentStates.TryGetValue(new Vector2(transform.position.x, transform.position.y), out state);
-            nextColor = _gs.Rules.getColorValue(state);
-
+        if (_gs.getCurrentGeneration() > generation)
+        {
+            generation++;
             StartCoroutine("CrossFade");
-        //}
+        }
 	}
 
     IEnumerator CrossFade()
     {
         Color current = GetComponent<SpriteRenderer>().color;
-        for (float t = 0f; t < _gs.minSecondsBetweenGenerations / 2.0f; t+=Time.deltaTime)
+
+        int n = -1;
+        _gs.currentStates.TryGetValue(new Vector2(transform.position.x, transform.position.y), out n);
+        Color next = _gs.Rules.getColorValue(n);
+
+        if (current.Equals(next)) yield break;
+
+        for (float t = 0f; t < 1.0f; t += Time.deltaTime / 1.0f)
         {
-            Color newColor = new Color(
-                Mathf.Lerp(lastColor.r, nextColor.r, t),
-                Mathf.Lerp(lastColor.g, nextColor.g, t),
-                Mathf.Lerp(lastColor.b, nextColor.b, t),
-                Mathf.Lerp(lastColor.a, nextColor.a, t)
+            Color nc = new Color(
+                Mathf.Lerp(current.r, next.r, t),
+                Mathf.Lerp(current.g, next.g, t),
+                Mathf.Lerp(current.b, next.b, t),
+                Mathf.Lerp(current.a, next.a, t)
             );
 
-            GetComponent<SpriteRenderer>().color = newColor;
+            GetComponent<SpriteRenderer>().color = nc;
             yield return null;
         }
     }

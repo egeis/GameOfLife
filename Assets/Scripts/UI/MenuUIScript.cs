@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MenuUIScript : MonoBehaviour
 {
     public GameObject menuPanel;
     public GameObject exitConfirm;
+    public GameObject newConfirm;
 
     void Start ()
     {
@@ -44,5 +46,23 @@ public class MenuUIScript : MonoBehaviour
     {
         exitConfirm.SetActive(false);
         menuPanel.SetActive(true);
+    }
+
+    public void onNewConfirmedPress()
+    {
+        newConfirm.SetActive(true);
+        menuPanel.SetActive(false);
+    }
+
+    public void onNewCanceledPressed()
+    {
+        newConfirm.SetActive(false);
+        menuPanel.SetActive(true);
+    }
+
+    public void onNewButtonPressed()
+    {
+        SceneManager.UnloadScene(1);
+        SceneManager.LoadScene("scene0");
     }
 }

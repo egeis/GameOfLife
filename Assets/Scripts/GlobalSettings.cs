@@ -19,17 +19,11 @@ public class GlobalSettings : MonoBehaviour
     public GameObject loadingInterface;
     public GameObject gameboard;
 
-    [Range(1, 60)]
-    public int minSecondsBetweenGenerations = 2;
-
     [Range(1, 100)]
     public int maxPregenCells = 2;
 
-    [Range(100, 500)]
-    public int cellRows = 100;
-
-    [Range(100, 500)]
-    public int cellColumns = 100;
+    public readonly int cellRows = 100;
+    public readonly int cellColumns = 100;
 
     public Camera mainCamera;
 
@@ -54,9 +48,6 @@ public class GlobalSettings : MonoBehaviour
     [HideInInspector]
     public Queue<Dictionary<Vector2, int>> FutureGenerations = new Queue<Dictionary<Vector2, int>>();
 
-    private int maxCount;
-    private int count;
-
     public int getCurrentGeneration()
     {
         return Interlocked.CompareExchange(ref current_generation, 0, 0);
@@ -65,21 +56,6 @@ public class GlobalSettings : MonoBehaviour
     public int incrementCurrentGeneration()
     {
         return Interlocked.Increment(ref current_generation);
-    }
-
-    public int getRenderCount()
-    {
-        return count;
-    }
-
-    public void incrementRenderCount()
-    {
-        count++;
-    }
-
-    public void resetRenderCount()
-    {
-        count = 0;
     }
 
     void Awake()
@@ -91,8 +67,6 @@ public class GlobalSettings : MonoBehaviour
     {
         Rules = new Classic();
         Cells = new Dictionary<Vector3, GameObject>();
-        count = 0;
-        maxCount = this.cellColumns * this.cellRows;
     }
 
     void Update()

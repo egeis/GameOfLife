@@ -57,26 +57,18 @@ public class GameInit : MonoBehaviour
 
     private IEnumerator RenderNextGeneration()
     {
-        while(true)
+        while (true)
         {
             if (_state == Status.ERROR) break;
 
-            yield return new WaitForSeconds(_gs.minSecondsBetweenGenerations);
-            
+            yield return new WaitForSeconds(1.0f + 0.5f);
+
             while (_state == Status.RUNNING)
             {
                 if (_gs.FutureGenerations.Count > 0)
                 {
-                    //_gs.incrementCurrentGeneration();
                     _gs.currentStates = _gs.FutureGenerations.Dequeue();
-                    for (int i = 0; i < _gs.cellColumns; i++)
-                    {
-                        for (int j = 0; j < _gs.cellRows; j++)
-                        {
-                            Vector2 position = new Vector2((float)i, (float)j);
-                            GameObject.Find("cell_" + position.x + "_" + position.y).GetComponent<CellBehaviour>;
-                        }
-                    }
+                    _gs.incrementCurrentGeneration();
                     break;
                 }
                 else
@@ -84,33 +76,6 @@ public class GameInit : MonoBehaviour
             }
         }
     }
-
-    //Too Slow at Updating Cells
-    /*private IEnumerator RenderCells()
-    {
-        currentStates = _gs.FutureGenerations.Dequeue();
-
-        for (int i = 0; i < _gs.cellColumns; i++)
-        {
-            for (int j = 0; j < _gs.cellRows; j++)
-            {
-                Vector2 position = new Vector2((float)i, (float)j);
-
-                int state = 0;
-                currentStates.TryGetValue(position, out state);
-
-                GameObject cell = GameObject.Find("cell_" + position.x + "_" + position.y);
-
-                cell.GetComponent<SpriteRenderer>().color = _gs.Rules.getColorValue(state);
-            }
-
-            yield return null;
-        }
-
-
-        renderingCells = false;
-        yield return null;
-    }*/
 
     private IEnumerator CreateGame()
     {
